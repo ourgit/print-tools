@@ -1,0 +1,21 @@
+.DS_Store
+node_modules/
+/dist/
+build/win-unpacked/
+build/win-ia32-unpacked/
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+build/*.exe
+build/*.blockmap
+build/*.yml
+build/*.zip
+
+# Editor directories and files
+.idea
+.vscode
+*.suo
+*.ntvs*
+*.njsproj
+*.sln
+build/builder-effective-config.yaml
