@@ -1,5 +1,6 @@
 <template>
   <div class="app-container">
+    <router-link to="/print">打印</router-link>
     <div class="barcode">
       <div class="title">一维码</div>
       <canvas id="barCode"></canvas>
