@@ -16,7 +16,7 @@
 
 <script>
 import JsBarcode from 'jsbarcode'
-import UQRCode from 'uqrcodejs';
+import UQRCode from 'uqrcodejs'
 import XLSX from 'xlsx'
 export default {
   data() {
