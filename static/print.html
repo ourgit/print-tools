@@ -1,0 +1,61 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta http-equiv="X-UA-Compatible" content="ie=edge" />
+  <title>Document</title>
+  <style scoped>
+    body,
+    html {
+      padding: 0;
+      margin: 0;
+      font-size: 12px;
+    }
+
+    @page {
+      margin: 0px;
+    }
+
+    ul,
+    li {
+      list-style: none;
+    }
+
+    ul {
+      padding-bottom: 40px;
+    }
+
+    .title {
+      text-align: center;
+    }
+
+    li {
+      margin-top: 10px;
+    }
+
+    li>span:first-of-type {
+      display: inline-block;
+      text-align: left;
+    }
+
+    .div1 {
+      overflow: hidden;
+    }
+  </style>
+</head>
+
+<body id="bd"></body>
+
+<script type="module">
+  const { ipcRenderer } = require('electron')
+  ipcRenderer.on('webview-print-render', (event, info) => {
+    // 执行渲染
+    console.log(JSON.stringify(info));
+    document.getElementById('bd').innerHTML = info.html
+    ipcRenderer.sendToHost('webview-print-do')
+  })
+</script>
+
+</html>

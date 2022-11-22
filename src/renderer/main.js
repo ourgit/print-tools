@@ -12,13 +12,15 @@ import './icons'
 import '@/styles/index.scss'
 import '@/styles/dark-mode.scss'
 
-
 if (!process.env.IS_WEB) {
   if (!require('../../config').IsUseSysTitle) {
     require('@/styles/custom-title.scss')
   }
 }
 
+import Print from '@/utils/print'
+
+Vue.use(Print)
 
 Vue.use(ElementUI)
 
@@ -28,7 +30,7 @@ const vue = new Vue({
   components: { App },
   router,
   store,
-  template: '<App/>'
+  template: '<App/>',
 }).$mount('#app')
 
 export default vue
