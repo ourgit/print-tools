@@ -5,6 +5,11 @@ Vue.use(Router)
 
 export const constantRouterMap = [
   {
+    path: '/ll',
+    component: () => import('@/views/p2'),
+    hidden: true,
+  },
+  {
     path: '/',
     component: () => import('@/views/home'),
     hidden: true,
