@@ -12,11 +12,17 @@
     </el-form>
 
     <webview id="printWebview" ref="printWebview" :src="fullPath" nodeintegration webpreferences="contextIsolation=no" style="visibility: hidden" />
-    <section ref="print">
+    <section style="border:1px solid #000">
       <div class="title">一维码</div>
-      <img id="barCode" style="width:30mm; height: 10mm;border: 1px solid #000;" />
+      <canvas id="barCode" class="barcode"></canvas>
+    </section>
+    <section ref="print">
       <div class="title">二维码</div>
-      <canvas id="second"></canvas>
+      <div class="code" style="width:34mm; height: 34mm;border: 1px solid #000;overflow: hidden;">
+        1111
+      </div>
+      <!-- <img src="http://tool.blxzx.com/qrcode.png" style="width:34mm; height: 34mm;border: 1px solid #000;"> -->
+      <canvas id="qrcode"></canvas>
     </section>
   </div>
 </template>
@@ -24,7 +30,7 @@
 <script>
 import { ipcRenderer } from 'electron'
 import JsBarcode from 'jsbarcode'
-import QRCode from "qrcode";
+import UQRCode from 'uqrcodejs'
 export default {
   data() {
     return {
@@ -60,18 +66,30 @@ export default {
   },
   methods: {
     createBarCode() {
-      JsBarcode("#barCode", "868749282", {
-        margin: 0,
-        width: 1.5,
-        height: this.$mmToPx(10),
-        displayValue: false
-      });
+      JsBarcode('#barCode', 'DY123456488', {
+        background: '#eee',
+        displayValue: false,
+        height: 80, // 一维码的高度
+        margin: 0 // 一维码与容器的margin
+      })
     },
     createQrcode() {
-      QRCode.toCanvas(document.getElementById("second"), "123456", {
-        margin: 0,
-        width: this.$mmToPx(34)
-      });
+      // 获取uQRCode实例
+      var qr = new UQRCode();
+      // 设置二维码内容
+      qr.data = "123456";
+      // 设置二维码大小，必须与canvas设置的宽高一致
+      // 调用制作二维码方法
+      qr.size = this.$mmToPx(34)
+      qr.make();
+      // 获取canvas元素
+      var canvas = document.getElementById("qrcode");
+      // 获取canvas上下文
+      var canvasContext = canvas.getContext("2d");
+      // 设置uQRCode实例的canvas上下文
+      qr.canvasContext = canvasContext;
+      // 调用绘制方法将二维码图案绘制到canvas上
+      qr.drawCanvas();
     },
     getPrinters() {
       ipcRenderer.send('getPrinterList')

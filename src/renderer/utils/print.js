@@ -72,13 +72,13 @@ Print.prototype = {
         }
       }
     }
-    //canvass echars图表转为图片
+    // canvass echars图表转为图片
     for (var k4 = 0; k4 < canvass.length; k4++) {
       if (isNeedRemove.length == 0) {
         var imageURL = canvass[k4].toDataURL('image/png')
         var img = document.createElement('img')
         img.src = imageURL
-        img.setAttribute('style', 'max-width: 100%;')
+        img.setAttribute('style', 'display: block;')
         img.className = 'isNeedRemove'
         canvass[k4].style.display = 'none'
         canvass[k4].parentNode.insertBefore(img, canvass[k4].nextElementSibling)

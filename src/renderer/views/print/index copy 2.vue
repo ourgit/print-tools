@@ -12,11 +12,18 @@
     </el-form>
 
     <webview id="printWebview" ref="printWebview" :src="fullPath" nodeintegration webpreferences="contextIsolation=no" style="visibility: hidden" />
-    <section ref="print">
+    <section style="border:1px solid #000">
       <div class="title">一维码</div>
-      <img id="barCode" style="width:30mm; height: 10mm;border: 1px solid #000;" />
+      <canvas id="barCode" class="barcode"></canvas>
+    </section>
+    <section ref="print">
       <div class="title">二维码</div>
-      <canvas id="second"></canvas>
+      <div class="code" style="width:34mm; height: 34mm;border: 1px solid #000;overflow: hidden;">
+        1111
+      </div>
+      <!-- <img src="http://tool.blxzx.com/qrcode.png" style="width:34mm; height: 34mm;border: 1px solid #000;"> -->
+
+      <div class="qrcode" ref="qrCodeUrl"></div>
     </section>
   </div>
 </template>
@@ -24,7 +31,7 @@
 <script>
 import { ipcRenderer } from 'electron'
 import JsBarcode from 'jsbarcode'
-import QRCode from "qrcode";
+import QRCode from 'qrcodejs2'
 export default {
   data() {
     return {
@@ -60,18 +67,22 @@ export default {
   },
   methods: {
     createBarCode() {
-      JsBarcode("#barCode", "868749282", {
-        margin: 0,
-        width: 1.5,
-        height: this.$mmToPx(10),
-        displayValue: false
-      });
+      JsBarcode('#barCode', 'DY123456488', {
+        background: '#eee',
+        displayValue: false,
+        height: 80, // 一维码的高度
+        margin: 0 // 一维码与容器的margin
+      })
     },
     createQrcode() {
-      QRCode.toCanvas(document.getElementById("second"), "123456", {
-        margin: 0,
-        width: this.$mmToPx(34)
-      });
+      var qrcode = new QRCode(this.$refs.qrCodeUrl, {
+        text: '123456', // 需要转换为二维码的内容
+        width: this.$mmToPx(34),
+        height: this.$mmToPx(34),
+        colorDark: '#000000',
+        colorLight: '#ffffff',
+        correctLevel: QRCode.CorrectLevel.H
+      })
     },
     getPrinters() {
       ipcRenderer.send('getPrinterList')
