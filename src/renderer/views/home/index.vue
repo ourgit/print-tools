@@ -7,7 +7,9 @@
     </div>
     <div class="barcode">
       <div class="title">二维码</div>
-      <canvas id="qrcode" width="200" height="200"></canvas>
+      <div class="code-box">
+        <div class="qrcode" ref="qrCodeUrl"></div>
+      </div>
     </div>
     <el-upload ref="upload" action="" style="margin: 0 10px" :on-change="importExcel" :auto-upload="false" :show-file-list="false">
       <el-button size="small" type="warning" icon="el-icon-upload2">导入数据</el-button>
@@ -17,7 +19,7 @@
 
 <script>
 import JsBarcode from 'jsbarcode'
-import UQRCode from 'uqrcodejs'
+import QRCode from 'qrcodejs2'
 import XLSX from 'xlsx'
 export default {
   data() {
@@ -28,6 +30,8 @@ export default {
   mounted() {
     this.createBarCode()
     this.createQrcode()
+    const thispx = this.$mmToPx(10)
+    console.log(thispx)
   },
   methods: {
     createBarCode() {
@@ -39,22 +43,14 @@ export default {
       })
     },
     createQrcode() {
-      // 获取uQRCode实例
-      var qr = new UQRCode();
-      // 设置二维码内容
-      qr.data = "12345678";
-      // 设置二维码大小，必须与canvas设置的宽高一致
-      qr.size = 200;
-      // 调用制作二维码方法
-      qr.make();
-      // 获取canvas元素
-      var canvas = document.getElementById("qrcode");
-      // 获取canvas上下文
-      var canvasContext = canvas.getContext("2d");
-      // 设置uQRCode实例的canvas上下文
-      qr.canvasContext = canvasContext;
-      // 调用绘制方法将二维码图案绘制到canvas上
-      qr.drawCanvas();
+      var qrcode = new QRCode(this.$refs.qrCodeUrl, {
+        text: '12145555', // 需要转换为二维码的内容
+        width: this.$mmToPx(34),
+        height: this.$mmToPx(34),
+        colorDark: '#000000',
+        colorLight: '#ffffff',
+        correctLevel: QRCode.CorrectLevel.H
+      })
     },
     importExcel(file) {
       const files = { 0: file.raw }
@@ -84,9 +80,10 @@ export default {
 };
 </script>
 
-<style scoped>
-.line {
-  text-align: center;
+<style lang="scss" scoped>
+.code-box {
+  border: 1px solid #000;
+  overflow: hidden;
 }
 </style>
 

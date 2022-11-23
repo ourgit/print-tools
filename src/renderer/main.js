@@ -22,6 +22,9 @@ import Print from '@/utils/print'
 
 Vue.use(Print)
 
+import { mmToPx } from '@/utils/unitConversion'
+Vue.prototype.$mmToPx = mmToPx
+
 Vue.use(ElementUI)
 
 Vue.config.productionTip = false

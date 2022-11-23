@@ -78,7 +78,9 @@
     "express": "4.17.3",
     "fs-extra": "^10.1.0",
     "jsbarcode": "^3.11.5",
-    "uqrcodejs": "^3.6.0",
+    "qrcode": "^1.5.1",
+    "qrcodejs2": "^0.0.2",
+    "uqrcodejs": "^4.0.0",
     "xlsx": "0.16.0"
   },
   "devDependencies": {
