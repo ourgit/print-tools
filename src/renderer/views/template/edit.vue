@@ -4,10 +4,10 @@
       <div class="title">系统标签模板</div>
       <div class="template-list">
         <div class="template-item" v-for="(item, index) in systemList" :key="index">
-          <router-link to="/data" class="code-box">
+          <div class="code-box">
             <img class="code-img" :src="item.src">
-          </router-link>
-          <router-link to="/data" class="name">{{item.name}}</router-link>
+          </div>
+          <div class="name">{{item.name}}</div>
           <div class="btn">
             <el-button type="primary" size="small">编辑</el-button>
           </div>
@@ -33,7 +33,6 @@
 </template>
 
 <script>
-import template from '@/template/index.json'
 export default {
   data() {
     return {
@@ -41,16 +40,8 @@ export default {
       localList: [{ name: '单件管理标签', src: require('@/assets/code/4.png') }, { name: '单件分箱标签', src: require('@/assets/code/5.png') }, { name: '多个单品种标签', src: require('@/assets/code/8.png') }, { name: '多个单品种零部件标签', src: require('@/assets/code/9.png') }]
     };
   },
-  created() {
-    this.getSystemList()
-  },
   methods: {
-    getSystemList() {
-      this.systemList = template.map(item => {
-        item.src = require('@/assets/code/' + item.id + '.png')
-        return item
-      })
-    }
+
   }
 };
 </script>

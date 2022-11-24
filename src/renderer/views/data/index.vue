@@ -13,7 +13,7 @@
       </div>
     </div>
     <div class="main">
-      <el-table ref="multipleTable" :data="dataList" tooltip-effect="dark" :height="`calc(100vh - 180px)`" style="width: 100%">
+      <el-table ref="multipleTable" :data="tabelData" tooltip-effect="dark" :height="`calc(100vh - 180px)`" style="width: 100%">
         <el-table-column type="selection" width="55">
         </el-table-column>
         <el-table-column label="资产名称">
@@ -46,7 +46,8 @@
 export default {
   data() {
     return {
-      dataList: [{
+      tabelColumn: [],
+      tabelData: [{
         name: '春秋常服',
         bzm: '868749282',
         djm: '1000000001000000010000001',

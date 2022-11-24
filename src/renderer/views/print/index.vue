@@ -81,27 +81,11 @@ export default {
             this.selectedPrinterName = item.name;
           }
         });
-        console.log('list', list)
         this.printerList = list
       })
     },
-    printRender() {
-      // this.messageBox = this.$message({
-      //   type: 'warning',
-      //   message: "打印中，请稍后",
-      //   duration: 0,
-      // });
-      // 获取<webview>节点
-      const webview = this.$refs.printWebview;
-      console.log('webview', webview);
-      webview.send("webview-print-render", {
-        printName: this.selectedPrinterName,
-        html: this.$print(this.$refs.print).dom.outerHTML,
-      });
-    },
     print() {
       this.$print(this.$refs.print, this.selectedPrinterName, this.$refs.printWebview)
-      // this.$print(this.$refs.print)
     }
   }
 };

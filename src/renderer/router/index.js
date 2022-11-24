@@ -25,11 +25,6 @@ export const constantRouterMap = [
     hidden: true,
   },
   {
-    path: '/json',
-    component: () => import('@/views/json'),
-    hidden: true,
-  },
-  {
     path: '/template',
     component: () => import('@/views/template'),
     hidden: true,
