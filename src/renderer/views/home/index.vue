@@ -3,6 +3,9 @@
     <router-link to="/print">打印</router-link>
     <router-link to="/p1">p1</router-link>
     <router-link to="/p2">p2</router-link>
+    <router-link to="/json">json</router-link>
+    <router-link to="/template">template</router-link>
+    <router-link to="/data">data</router-link>
     <div class="barcode">
       <div class="title">一维码</div>
       <canvas id="barCode"></canvas>
