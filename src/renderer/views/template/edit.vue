@@ -24,9 +24,13 @@
       </div>
       <div class="option-wrap">
         <div class="option-setting">
-          <div class="hd">属性设置</div>
-          <div class="bd">
-
+          <div class="title">缩放设置</div>
+          <div class="option-list">
+            <div class="option-item">
+              <div class="value">
+                <el-slider v-model="value1" :step="1" :min="-300" :max="500" :format-tooltip="formatTooltip"></el-slider>
+              </div>
+            </div>
           </div>
         </div>
       </div>
@@ -44,7 +48,8 @@ export default {
       templateType: 1,
       templateId: 0,
       templateName: '',
-      templateData: {}
+      templateData: {},
+      value1: 100
     };
   },
   created() {
@@ -58,7 +63,16 @@ export default {
         this.templateData = template.find(item => {
           return item.id === this.templateId
         })
-        console.log(this.templateData)
+        this.templateName = this.templateData.name
+      }
+    },
+    formatTooltip(val) {
+      if (val >= 100) {
+        this.templateData.ratio = val
+        return val + '%'
+      } else {
+        this.templateData.ratio = 100 - val + 100
+        return '-' + (100 - val + 100) + '%';
       }
     }
   }
@@ -96,23 +110,27 @@ export default {
     display: flex;
     flex-direction: column;
     align-items: center;
+    overflow: hidden;
     .template-content {
       margin: 30px;
     }
   }
   .option-wrap {
     margin-left: 40px;
-    width: 300px;
+    width: 400px;
 
     .option-setting {
       border: 1px solid #f4f4f4;
-      .hd {
+      .title {
         background: #f4f4f4;
         padding: 10px 20px;
         font-size: 14px;
       }
-      .bd {
+      .option-list {
         padding: 20px;
+        ::v-deep .el-slider__bar {
+          background: transparent;
+        }
       }
     }
   }

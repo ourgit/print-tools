@@ -18,12 +18,20 @@ if (!process.env.IS_WEB) {
   }
 }
 
+// import * as filters from '@/utils/filters'
+
+// Object.keys(filters).forEach((key) => {
+//   Vue.prototype[`$${key}`] = filters[key]
+//   Vue.filter(key, filters[key])
+// })
+
 import Print from '@/utils/print'
 
 Vue.use(Print)
 
-import { mmToPx } from '@/utils/unitConversion'
+import { mmToPx, calcStyle } from '@/utils/unitConversion'
 Vue.prototype.$mmToPx = mmToPx
+Vue.prototype.$calcStyle = calcStyle
 
 Vue.use(ElementUI)
 

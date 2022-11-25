@@ -20,7 +20,6 @@ export function getDPI() {
 export function pxToMM(value) {
   var inch = value / getDPI()[0]
   var c_value = inch * 25.4
-  //      console.log(c_value);
   return c_value
 }
 
@@ -28,6 +27,20 @@ export function pxToMM(value) {
 export function mmToPx(value) {
   var inch = value / 25.4
   var c_value = inch * getDPI()[0]
-  //      console.log(c_value);
   return c_value
+}
+
+/**
+ * 按比例计算样式
+ * @param {Number} value 原数组。
+ * @param {Number} ratio 正负比例值。
+ * @param {String} unit 单位。
+ */
+export function calcStyle(value, ratio, unit) {
+  const rationNumber = ratio / 100
+  if (ratio > 0) {
+    return value * rationNumber + unit
+  } else {
+    return value / Math.abs(rationNumber) + unit
+  }
 }
