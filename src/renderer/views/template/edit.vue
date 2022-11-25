@@ -15,7 +15,7 @@
           <el-input v-model="templateName" placeholder="请输入标签模板名称"></el-input>
         </div>
         <div class="template-content">
-          <template1 :templateData="templateData" />
+          <template1 :templateData="templateData" :ratio="ratio" @updateItem="updateItem" />
         </div>
         <div class="btn">
           <el-button>重置</el-button>
@@ -28,7 +28,24 @@
           <div class="option-list">
             <div class="option-item">
               <div class="value">
-                <el-slider v-model="value1" :step="1" :min="-300" :max="500" :format-tooltip="formatTooltip"></el-slider>
+                <el-slider v-model="ratio" :step="1" :min="-300" :max="500" :format-tooltip="formatTooltip"></el-slider>
+              </div>
+            </div>
+          </div>
+        </div>
+        <div v-if="showOption" class="option-setting" style="margin-top:20px">
+          <div class="title">单元属性设置</div>
+          <div class="option-list">
+            <div v-if="templateData[currentItem+ 'ShowLabel']" class="option-item">
+              <div class="label">显示名称</div>
+              <div class="value">
+                <el-input v-model="templateData[currentItem+ 'Label']" placeholder="请输入内容"></el-input>
+              </div>
+            </div>
+            <div class="option-item">
+              <div class="label">是否显示</div>
+              <div class="value">
+                <el-switch v-model="templateData['show'+currentItem]" active-color="#13ce66" inactive-color="#ff4949"></el-switch>
               </div>
             </div>
           </div>
@@ -49,7 +66,9 @@ export default {
       templateId: 0,
       templateName: '',
       templateData: {},
-      value1: 100
+      ratio: 100,
+      showOption: false,
+      currentItem: '',
     };
   },
   created() {
@@ -71,9 +90,14 @@ export default {
         this.templateData.ratio = val
         return val + '%'
       } else {
-        this.templateData.ratio = 100 - val + 100
+        const ratio = 0 - (100 - val + 100)
+        this.templateData.ratio = ratio
         return '-' + (100 - val + 100) + '%';
       }
+    },
+    updateItem(val) {
+      this.showOption = true
+      this.currentItem = val
     }
   }
 };
@@ -130,6 +154,13 @@ export default {
         padding: 20px;
         ::v-deep .el-slider__bar {
           background: transparent;
+        }
+        .option-item {
+          .label {
+            font-size: 14px;
+            color: #666;
+            padding: 10px 0;
+          }
         }
       }
     }

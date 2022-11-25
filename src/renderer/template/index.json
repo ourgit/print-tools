@@ -4,8 +4,9 @@
     "name": "一维品牌标签",
     "ratio": 100,
     "A002Label": "品种码",
+    "A002ShowLabel": false,
     "A002": "867546112",
-    "showText": true
+    "showA002": true
   },
   {
     "id": 2,

@@ -30,6 +30,8 @@ export function mmToPx(value) {
   return c_value
 }
 
+
+
 /**
  * 按比例计算样式
  * @param {Number} value 原数组。
@@ -42,5 +44,20 @@ export function calcStyle(value, ratio, unit) {
     return value * rationNumber + unit
   } else {
     return value / Math.abs(rationNumber) + unit
+  }
+}
+
+
+/**
+ * 按比例计算
+ * @param {Number} value 原数组。
+ * @param {Number} ratio 正负比例值。
+ */
+export function calcRatio(value, ratio) {
+  const rationNumber = ratio / 100
+  if (ratio > 0) {
+    return value * rationNumber
+  } else {
+    return value / Math.abs(rationNumber)
   }
 }

@@ -29,9 +29,10 @@ import Print from '@/utils/print'
 
 Vue.use(Print)
 
-import { mmToPx, calcStyle } from '@/utils/unitConversion'
+import { mmToPx, calcStyle, calcRatio } from '@/utils/unitConversion'
 Vue.prototype.$mmToPx = mmToPx
 Vue.prototype.$calcStyle = calcStyle
+Vue.prototype.$calcRatio = calcRatio
 
 Vue.use(ElementUI)
 

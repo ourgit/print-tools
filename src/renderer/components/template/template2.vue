@@ -42,7 +42,6 @@ export default {
   },
   methods: {
     createBarCode() {
-      console.log('2222')
       const barCodeWidth = this.$calcRatio(1 * this.templateData.ratio)
       const barCodeHight = this.$calcRatio(10, this.templateData.ratio)
       JsBarcode("#barCode", this.templateData.A002, {
