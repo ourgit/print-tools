@@ -3,9 +3,7 @@
     <router-link to="/print">打印</router-link>
     <router-link to="/p1">p1</router-link>
     <router-link to="/p2">p2</router-link>
-    <router-link to="/json">json</router-link>
-    <router-link to="/template">template</router-link>
-    <router-link to="/data">data</router-link>
+    <router-link to="/template">模板</router-link>
     <div class="barcode">
       <div class="title">一维码</div>
       <canvas id="barCode"></canvas>
@@ -72,7 +70,15 @@ export default {
           })
           const wsname = workbook.SheetNames[0]
           const ws = XLSX.utils.sheet_to_json(workbook.Sheets[wsname])
-          console.log(ws)
+          const list = []
+          ws.forEach(item => {
+            if (item['品种码']) {
+              list.push({
+                A002: item['品种码']
+              })
+            }
+          })
+          console.log(list)
 
         } catch (e) {
           this.$Message.error('解析失败!')

@@ -16,17 +16,7 @@
       <el-table ref="multipleTable" :data="tabelData" tooltip-effect="dark" :height="`calc(100vh - 180px)`" style="width: 100%">
         <el-table-column type="selection" width="55">
         </el-table-column>
-        <el-table-column label="资产名称">
-          <template slot-scope="scope">{{ scope.row.name }}</template>
-        </el-table-column>
-        <el-table-column label="品种码">
-          <template slot-scope="scope">{{ scope.row.bzm }}</template>
-        </el-table-column>
-        <el-table-column prop="单价码" label="单件码">
-          <template slot-scope="scope">{{ scope.row.djm }}</template>
-        </el-table-column>
-        <el-table-column prop="管理部门" label="管理部门">
-          <template slot-scope="scope">{{ scope.row.gxbm }}</template>
+        <el-table-column v-for="(item,index) in tabelColumn" :key="index" :prop="item.value" :label="item.label">
         </el-table-column>
         <el-table-column label="操作" align="center">
           <template>
@@ -43,75 +33,40 @@
 </template>
 
 <script>
+import template from '@/template/index.json'
 export default {
   data() {
     return {
+      templateType: 1,
+      templateId: 0,
       tabelColumn: [],
       tabelData: [{
-        name: '春秋常服',
-        bzm: '868749282',
-        djm: '1000000001000000010000001',
-        gxbm: 'XXX部门'
-      }, {
-        name: '春秋常服',
-        bzm: '868749282',
-        djm: '1000000001000000010000001',
-        gxbm: 'XXX部门'
-      },
-      {
-        name: '春秋常服',
-        bzm: '868749282',
-        djm: '1000000001000000010000001',
-        gxbm: 'XXX部门'
-      }, {
-        name: '春秋常服',
-        bzm: '868749282',
-        djm: '1000000001000000010000001',
-        gxbm: 'XXX部门'
-      },
-      {
-        name: '春秋常服',
-        bzm: '868749282',
-        djm: '1000000001000000010000001',
-        gxbm: 'XXX部门'
-      }, {
-        name: '春秋常服',
-        bzm: '868749282',
-        djm: '1000000001000000010000001',
-        gxbm: 'XXX部门'
-      },
-      {
-        name: '春秋常服',
-        bzm: '868749282',
-        djm: '1000000001000000010000001',
-        gxbm: 'XXX部门'
-      }, {
-        name: '春秋常服',
-        bzm: '868749282',
-        djm: '1000000001000000010000001',
-        gxbm: 'XXX部门'
-      },
-      {
-        name: '春秋常服',
-        bzm: '868749282',
-        djm: '1000000001000000010000001',
-        gxbm: 'XXX部门'
-      }, {
-        name: '春秋常服',
-        bzm: '868749282',
-        djm: '1000000001000000010000001',
-        gxbm: 'XXX部门'
-      },
-      {
-        name: '春秋常服',
-        bzm: '868749282',
-        djm: '1000000001000000010000001',
-        gxbm: 'XXX部门'
+        A002: '868749282'
       }]
     };
   },
+  created() {
+    this.templateType = +this.$route.query.type
+    this.templateId = +this.$route.query.id
+    this.init()
+  },
   methods: {
-
+    init() {
+      if (this.templateType === 1) {
+        const templateData = template.find(item => {
+          return item.id === this.templateId
+        })
+        const tabelColumn = []
+        if (this.templateId === 1) {
+          tabelColumn.push({
+            label: templateData.A002Label,
+            value: 'A002'
+          })
+        }
+        this.tabelColumn = tabelColumn
+        console.log(this.tabelColumn)
+      }
+    }
   }
 };
 </script>

@@ -4,12 +4,14 @@
       <div class="title">系统标签模板</div>
       <div class="template-list">
         <div class="template-item" v-for="(item, index) in systemList" :key="index">
-          <router-link to="/data" class="code-box">
+          <router-link :to="{path:'/data',query: { type: 1,id: item.id }}" class="code-box">
             <img class="code-img" :src="item.src">
           </router-link>
-          <router-link to="/data" class="name">{{item.name}}</router-link>
+          <router-link :to="{path:'/data',query: { type: 1,id: item.id }}" class="name">{{item.name}}</router-link>
           <div class="btn">
-            <el-button type="primary" size="small">编辑</el-button>
+            <router-link :to="{path:'/editTemplate',query: { type: 1,id: item.id }}">
+              <el-button type="primary" size="small">编辑</el-button>
+            </router-link>
           </div>
         </div>
       </div>

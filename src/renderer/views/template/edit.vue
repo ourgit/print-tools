@@ -1,30 +1,32 @@
 <template>
   <div class="app-container">
-    <div class="template-wrap">
-      <div class="title">系统标签模板</div>
-      <div class="template-list">
-        <div class="template-item" v-for="(item, index) in systemList" :key="index">
-          <div class="code-box">
-            <img class="code-img" :src="item.src">
-          </div>
-          <div class="name">{{item.name}}</div>
-          <div class="btn">
-            <el-button type="primary" size="small">编辑</el-button>
-          </div>
+    <div class="top">
+      <router-link to="/" class="back">
+        <i class="el-icon-arrow-left"></i>
+      </router-link>
+      <div class="title">
+        编辑标签模板
+      </div>
+      <div></div>
+    </div>
+    <div class="main">
+      <div class="edit-wrap">
+        <div class="template-name">
+          <el-input v-model="templateName" placeholder="请输入标签模板名称"></el-input>
+        </div>
+        <div class="template-content">
+          <template1 :templateData="templateData" />
+        </div>
+        <div class="btn">
+          <el-button>重置</el-button>
+          <el-button type="primary">保存</el-button>
         </div>
       </div>
-    </div>
-    <div class="template-wrap">
-      <div class="title">本地标签模板</div>
-      <div class="template-list">
-        <div class="template-item" v-for="(item, index) in localList" :key="index">
-          <div class="code-box">
-            <img class="code-img" :src="item.src">
-          </div>
-          <div class="name">{{item.name}}</div>
-          <div class="btn">
-            <el-button type="primary" size="small">编辑</el-button>
-            <el-button type="danger" size="small">删除</el-button>
+      <div class="option-wrap">
+        <div class="option-setting">
+          <div class="hd">属性设置</div>
+          <div class="bd">
+
           </div>
         </div>
       </div>
@@ -33,61 +35,84 @@
 </template>
 
 <script>
+import Template1 from "@/components/template/template1.vue";
+import template from '@/template/index.json'
 export default {
+  components: { Template1 },
   data() {
     return {
-      systemList: [],
-      localList: [{ name: '单件管理标签', src: require('@/assets/code/4.png') }, { name: '单件分箱标签', src: require('@/assets/code/5.png') }, { name: '多个单品种标签', src: require('@/assets/code/8.png') }, { name: '多个单品种零部件标签', src: require('@/assets/code/9.png') }]
+      templateType: 1,
+      templateId: 0,
+      templateName: '',
+      templateData: {}
     };
   },
+  created() {
+    this.templateType = +this.$route.query.type
+    this.templateId = +this.$route.query.id
+    this.init()
+  },
   methods: {
-
+    init() {
+      if (this.templateType === 1) {
+        this.templateData = template.find(item => {
+          return item.id === this.templateId
+        })
+        console.log(this.templateData)
+      }
+    }
   }
 };
 </script>
 <style lang="scss" scoped>
-.app-container {
-  padding: 20px;
-}
-.template-wrap {
-  background: #fff;
+.top {
   display: flex;
-  flex-direction: column;
-  margin-bottom: 20px;
+  justify-content: space-between;
+  align-items: center;
+  background: #fff;
+  padding: 10px 20px;
   border-radius: 5px;
+  .back {
+    .el-icon-arrow-left {
+      font-size: 20px;
+      font-weight: 700;
+    }
+  }
   .title {
-    padding: 20px;
-    font-size: 20px;
     font-weight: 700;
   }
-  .template-list {
+}
+.main {
+  margin: 20px;
+  min-height: 500px;
+  border-radius: 5px;
+  overflow: hidden;
+  background: #fff;
+  margin: 20px;
+  display: flex;
+  padding: 40px;
+  .edit-wrap {
+    flex: 1;
     display: flex;
-    flex-wrap: wrap;
-    .template-item {
-      width: 200px;
-      display: flex;
-      flex-direction: column;
-      align-items: center;
-      margin-bottom: 20px;
-      margin-right: 20px;
-      .code-box {
-        width: 200px;
-        height: 100px;
-        display: flex;
-        justify-content: center;
-        align-items: center;
-        overflow: hidden;
-        .code-img {
-          height: 80px;
-        }
+    flex-direction: column;
+    align-items: center;
+    .template-content {
+      margin: 30px;
+    }
+  }
+  .option-wrap {
+    margin-left: 40px;
+    width: 300px;
+
+    .option-setting {
+      border: 1px solid #f4f4f4;
+      .hd {
+        background: #f4f4f4;
+        padding: 10px 20px;
+        font-size: 14px;
       }
-      .name {
-        margin: 5px 0;
-        line-height: 1.5;
-        font-weight: 700;
-      }
-      .btn {
-        margin-top: 5px;
+      .bd {
+        padding: 20px;
       }
     }
   }

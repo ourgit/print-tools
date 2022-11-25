@@ -30,6 +30,11 @@ export const constantRouterMap = [
     hidden: true,
   },
   {
+    path: '/editTemplate',
+    component: () => import('@/views/template/edit'),
+    hidden: true,
+  },
+  {
     path: '/data',
     component: () => import('@/views/data'),
     hidden: true,
