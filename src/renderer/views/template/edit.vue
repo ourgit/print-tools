@@ -15,11 +15,13 @@
           <el-input v-model="templateName" placeholder="请输入标签模板名称"></el-input>
         </div>
         <div class="template-content">
-          <template1 :templateData="templateData" :ratio="ratio" @updateItem="updateItem" />
+          <template1 v-if="templateId === 1" :templateData="templateData" isEdit :ratio="ratio" @updateItem="updateItem" />
+          <template2 v-if="templateId === 2" :templateData="templateData" isEdit :ratio="ratio" @updateItem="updateItem" />
+          <template3 v-if="templateId === 3" :templateData="templateData" isEdit :ratio="ratio" />
         </div>
         <div class="btn">
-          <el-button>重置</el-button>
-          <el-button type="primary">保存</el-button>
+          <el-button @click="reset">重置</el-button>
+          <el-button :loading="saveLoading" type="primary" @click="saveTemplate">保存</el-button>
         </div>
       </div>
       <div class="option-wrap">
@@ -56,12 +58,18 @@
 </template>
 
 <script>
+import Store from 'electron-store';
+const store = new Store();
+import { v4 as uuid } from 'uuid'
 import Template1 from "@/components/template/template1.vue";
+import Template2 from "@/components/template/template2.vue";
+import Template3 from "@/components/template/template3.vue";
 import template from '@/template/index.json'
 export default {
-  components: { Template1 },
+  components: { Template1, Template2, Template3 },
   data() {
     return {
+      localId: '',
       templateType: 1,
       templateId: 0,
       templateName: '',
@@ -69,23 +77,38 @@ export default {
       ratio: 100,
       showOption: false,
       currentItem: '',
+      saveLoading: false
     };
   },
   created() {
     this.templateType = +this.$route.query.type
     this.templateId = +this.$route.query.id
+    if (this.$route.query.localId) {
+      this.localId = this.$route.query.localId
+    }
     this.init()
   },
   methods: {
     init() {
       if (this.templateType === 1) {
-        this.templateData = template.find(item => {
+        const templateData = template.find(item => {
           return item.id === this.templateId
         })
+        this.templateData = JSON.parse(JSON.stringify(templateData))
         this.templateName = this.templateData.name
+        this.ratio = this.templateData.ratio
+      } else {
+        const localTemplate = store.get('localTemplate') || []
+        const templateData = localTemplate.find(item => {
+          return item.id === this.templateId && item.localId === this.localId
+        })
+        this.templateData = JSON.parse(JSON.stringify(templateData))
+        this.templateName = this.templateData.name
+        this.ratio = this.templateData.ratio
       }
     },
     formatTooltip(val) {
+      if (!val) return
       if (val >= 100) {
         this.templateData.ratio = val
         return val + '%'
@@ -98,6 +121,42 @@ export default {
     updateItem(val) {
       this.showOption = true
       this.currentItem = val
+    },
+    saveTemplate() {
+      let localTemplate = store.get('localTemplate') || []
+      let templateData = JSON.parse(JSON.stringify(this.templateData))
+      if (this.saveLoading) return
+      this.saveLoading = true
+      if (this.templateType === 1) {
+        templateData.localId = uuid()
+        templateData.name = this.templateName
+        localTemplate.push(templateData)
+        store.set('localTemplate', localTemplate)
+      } else {
+        const localIndex = localTemplate.findIndex(item => item.id === this.templateId && item.localId === this.localId)
+        localTemplate[localIndex] = templateData
+        localTemplate[localIndex].name = this.templateName
+        store.set('localTemplate', localTemplate)
+      }
+      this.saveLoading = false
+      this.$router.push({ path: "/" })
+    },
+    reset() {
+      this.$confirm('您确定要重置此标签模板吗?', '提示', {
+        showClose: false,
+        type: 'warning'
+      }).then(() => {
+        const templateData = template.find(item => {
+          return item.id === this.templateId
+        })
+        if (this.templateType === 1) {
+          this.templateData = JSON.parse(JSON.stringify(templateData))
+        } else {
+          this.templateData = JSON.parse(JSON.stringify(templateData))
+          this.templateData.localId = this.localId
+        }
+        this.ratio = this.templateData.ratio
+      })
     }
   }
 };
@@ -122,7 +181,7 @@ export default {
 }
 .main {
   margin: 20px;
-  min-height: 500px;
+  min-height: calc(100vh - 80px);
   border-radius: 5px;
   overflow: hidden;
   background: #fff;

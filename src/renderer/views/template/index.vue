@@ -20,13 +20,15 @@
       <div class="title">本地标签模板</div>
       <div class="template-list">
         <div class="template-item" v-for="(item, index) in localList" :key="index">
-          <div class="code-box">
+          <router-link :to="{path:'/data',query: { type: 2,id: item.id,localId: item.localId }}" class="code-box">
             <img class="code-img" :src="item.src">
-          </div>
-          <div class="name">{{item.name}}</div>
+          </router-link>
+          <router-link :to="{path:'/data',query: { type: 2,id: item.id,localId: item.localId }}" class="name">{{item.name}}</router-link>
           <div class="btn">
-            <el-button type="primary" size="small">编辑</el-button>
-            <el-button type="danger" size="small">删除</el-button>
+            <router-link :to="{path:'/editTemplate',query: { type: 2,id: item.id,localId: item.localId }}">
+              <el-button type="primary" size="small">编辑</el-button>
+            </router-link>
+            <el-button type="danger" size="small" @click="delTemplate(index)">删除</el-button>
           </div>
         </div>
       </div>
@@ -35,22 +37,43 @@
 </template>
 
 <script>
+import Store from 'electron-store';
+const store = new Store();
 import template from '@/template/index.json'
 export default {
   data() {
     return {
       systemList: [],
-      localList: [{ name: '单件管理标签', src: require('@/assets/code/4.png') }, { name: '单件分箱标签', src: require('@/assets/code/5.png') }, { name: '多个单品种标签', src: require('@/assets/code/8.png') }, { name: '多个单品种零部件标签', src: require('@/assets/code/9.png') }]
+      localList: []
     };
   },
   created() {
     this.getSystemList()
+    this.getLocalTemplate()
   },
   methods: {
     getSystemList() {
       this.systemList = template.map(item => {
         item.src = require('@/assets/code/' + item.id + '.png')
         return item
+      })
+    },
+    getLocalTemplate() {
+      const localTemplate = store.get('localTemplate') || []
+      this.localList = localTemplate.map(item => {
+        item.src = require('@/assets/code/' + item.id + '.png')
+        return item
+      })
+    },
+    delTemplate(index) {
+      this.$confirm('您确定要删除此标签模板吗?', '提示', {
+        showClose: false,
+        type: 'warning'
+      }).then(() => {
+        const localTemplate = store.get('localTemplate') || []
+        localTemplate.splice(index, 1)
+        store.set('localTemplate', localTemplate)
+        this.getLocalTemplate()
       })
     }
   }

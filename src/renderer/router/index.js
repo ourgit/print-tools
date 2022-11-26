@@ -16,17 +16,12 @@ export const constantRouterMap = [
   },
   {
     path: '/',
-    component: () => import('@/views/home'),
+    component: () => import('@/views/template'),
     hidden: true,
   },
   {
     path: '/print',
     component: () => import('@/views/print'),
-    hidden: true,
-  },
-  {
-    path: '/template',
-    component: () => import('@/views/template'),
     hidden: true,
   },
   {

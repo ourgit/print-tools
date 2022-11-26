@@ -30,8 +30,6 @@ export function mmToPx(value) {
   return c_value
 }
 
-
-
 /**
  * 按比例计算样式
  * @param {Number} value 原数组。
@@ -46,7 +44,6 @@ export function calcStyle(value, ratio, unit) {
     return value / Math.abs(rationNumber) + unit
   }
 }
-
 
 /**
  * 按比例计算

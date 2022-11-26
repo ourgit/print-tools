@@ -1,7 +1,9 @@
 <template>
-  <div class="tempate-box" :style="{'width':$calcStyle(40,templateData.ratio,'mm'),'height':$calcStyle(15,templateData.ratio,'mm'),'paddingTop':$calcStyle(2.5,templateData.ratio,'mm')}">
+  <div :class="['tempate-box', {isEdit}]" :style="{'width':$calcStyle(40,templateData.ratio,'mm'),'height':$calcStyle(15,templateData.ratio,'mm'),'paddingTop':$calcStyle(2.5,templateData.ratio,'mm')}">
     <canvas id="barCode" :style="{'width':$calcStyle(30,templateData.ratio,'mm'),'height':$calcStyle(10,templateData.ratio,'mm')}"></canvas>
-    <div class="text" :style="{'height':$calcStyle(2.5,templateData.ratio,'mm'),'fontSize':$calcStyle(6,templateData.ratio,'pt')}" @click="updateItem('A002')">{{templateData.A002}}</div>
+    <div class="text" :style="{'height':$calcStyle(2.5,templateData.ratio,'mm'),'fontSize':$calcStyle(6,templateData.ratio,'pt')}" @click="updateItem('A002')">
+      {{ templateData.showA002 ? templateData.A002 : ''}}
+    </div>
   </div>
 </template>
 
@@ -25,11 +27,6 @@ export default {
       default: false,
     },
   },
-  data() {
-    return {
-
-    }
-  },
   watch: {
     ratio: {
       handler(e) {
@@ -42,8 +39,7 @@ export default {
   },
   methods: {
     createBarCode() {
-      console.log('2222')
-      const barCodeWidth = this.$calcRatio(1 * this.templateData.ratio)
+      const barCodeWidth = this.$calcRatio(1, this.templateData.ratio)
       const barCodeHight = this.$calcRatio(10, this.templateData.ratio)
       JsBarcode("#barCode", this.templateData.A002, {
         margin: 0,
@@ -53,6 +49,7 @@ export default {
       });
     },
     updateItem(e) {
+      if (!this.isEdit) return
       this.$emit('updateItem', e)
     }
   }
@@ -67,6 +64,10 @@ export default {
   display: flex;
   flex-direction: column;
   align-items: center;
+  overflow: hidden;
+  &.isEdit {
+    border: 1px solid #000;
+  }
   .text {
     height: 2.5mm;
     font-size: 6pt;

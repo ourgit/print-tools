@@ -9,28 +9,28 @@
       </div>
       <div class="btn" style="display: flex;">
         <el-upload ref="upload" action="" style="margin: 0 10px" :on-change="importExcel" :auto-upload="false" :show-file-list="false">
-        <el-button type="primary" size="small">导入</el-button>
-      </el-upload>
-      
+          <el-button type="primary" size="small">导入</el-button>
+        </el-upload>
+
         <el-button type="success" size="small" @click="dialogTableVisible = true">新增</el-button>
       </div>
     </div>
-    <el-dialog title="收货地址" :visible.sync="dialogTableVisible">
-<!--   <el-table :data="gridData">
+    <el-dialog title="" :visible.sync="dialogTableVisible">
+      <!--   <el-table :data="gridData">
     <el-table-column v-for="(val,index) in tabelColumn"  :label="val.label" width="150"></el-table-column>
     
   </el-table> -->
-</el-dialog>
+    </el-dialog>
     <div class="main">
-      <el-table ref="multipleTable" :data="tabelData" tooltip-effect="dark" :height="`calc(100vh - 180px)`" style="width: 100%">
+      <el-table ref="multipleTable" :data="tableData" tooltip-effect="dark" :row-class-name="tableRowClassName" :height="`calc(100vh - 180px)`" style="width: 100%">
         <el-table-column type="selection" width="55">
         </el-table-column>
         <el-table-column v-for="(item,index) in tabelColumn" :key="index" :prop="item.value" :label="item.label">
         </el-table-column>
-        <el-table-column label="操作" align="center">
-          <template>
+        <el-table-column label="操作" align="center" width="200">
+          <template #default="{ row }">
             <el-button type="primary" size="small">打印</el-button>
-            <el-button type="danger" size="small">删除</el-button>
+            <el-button type="danger" size="small" @click.stop="delRow(row.index)">删除</el-button>
           </template>
         </el-table-column>
       </el-table>
@@ -51,16 +51,13 @@ export default {
       templateType: 1,
       templateId: 0,
       tabelColumn: [],
-      tabelData: [{
-        A002: '868749282'
-      }],
+      tableData: [],
       dialogTableVisible: false,
       dialogFormVisible: false,
-      gridData:[]
+      gridData: []
     };
   },
   created() {
-   
     this.templateType = +this.$route.query.type
     this.templateId = +this.$route.query.id
     this.init()
@@ -73,141 +70,147 @@ export default {
         })
         const tabelColumn = []
 
-        switch(this.templateId) {
+        switch (this.templateId) {
           case 1:
-          tabelColumn.push({
-            label: templateData.A002Label,
-            value: '品种码'
-          }); break;
+            tabelColumn.push({
+              label: templateData.A002Label,
+              value: '品种码'
+            }); break;
           case 2:
-          tabelColumn.push({
-            label: templateData.A002Label,
-            value: '品种码'
-          },{
-            label: templateData.A003Label,
-            value: '单件码'
-          }); break;
+            tabelColumn.push({
+              label: templateData.A002Label,
+              value: '品种码'
+            }, {
+              label: templateData.A003Label,
+              value: '单件码'
+            }); break;
           case 3:
-          tabelColumn.push({
-            label: '品种码',
-            value: '品种码'
-          },{
-            label: '单件码',
-            value: '单件码'
-          }); break;
+            tabelColumn.push({
+              label: '品种码',
+              value: '品种码'
+            }, {
+              label: '单件码',
+              value: '单件码'
+            }); break;
           case 4:
-          tabelColumn.push({
-            label: templateData.cx,
-            value: '资产名称'
-          },{
-            label: templateData.A002Label,
-            value: '品种码'
-          },{
-            label: templateData.A003Label,
-            value: '单件码'
-          },{
-            label: templateData.deptLabel,
-            value: '管理部门'
-          }); break;
+            tabelColumn.push({
+              label: templateData.cx,
+              value: '资产名称'
+            }, {
+              label: templateData.A002Label,
+              value: '品种码'
+            }, {
+              label: templateData.A003Label,
+              value: '单件码'
+            }, {
+              label: templateData.deptLabel,
+              value: '管理部门'
+            }); break;
           case 5:
-          tabelColumn.push({
-            label: templateData.A001Label,
-            value: '资产名称'
-          },{
-            label: templateData.A005Label,
-            value: '供应商'
-          },{
-            label: templateData.A006Label,
-            value: '规格型号'
-          },{
-            label: templateData.A052Label,
-            value: '分箱号'
-          },{
-            label: templateData.A010Label,
-            value: '生产日期'
-          },{
-            label: templateData.A902Label,
-            value: '计量单位'
-          },{
-            label: templateData.A002Label,
-            value: '品种码'
-          },{
-            label: templateData.A003Label,
-            value: '单件码'
-          }); break;
+            tabelColumn.push({
+              label: templateData.A001Label,
+              value: '资产名称'
+            }, {
+              label: templateData.A005Label,
+              value: '供应商'
+            }, {
+              label: templateData.A006Label,
+              value: '规格型号'
+            }, {
+              label: templateData.A052Label,
+              value: '分箱号'
+            }, {
+              label: templateData.A010Label,
+              value: '生产日期'
+            }, {
+              label: templateData.A902Label,
+              value: '计量单位'
+            }, {
+              label: templateData.A002Label,
+              value: '品种码'
+            }, {
+              label: templateData.A003Label,
+              value: '单件码'
+            }); break;
           case 6:
-          tabelColumn.push({
-            label: templateData.A002Label,
-            value: '品种码'
-          },{
-            label: templateData.A007Label,
-            value: '零部件号'
-          }); break;
+            tabelColumn.push({
+              label: templateData.A002Label,
+              value: '品种码'
+            }, {
+              label: templateData.A007Label,
+              value: '零部件号'
+            }); break;
           case 7:
-          tabelColumn.push({
-            label: templateData.A002Label,
-            value: '品种码'
-          },{
-            label: templateData.A003Label,
-            value: '单件码'
-          },{
-            label: templateData.A007Label,
-            value: '零部件号'
-          }); break;
+            tabelColumn.push({
+              label: templateData.A002Label,
+              value: '品种码'
+            }, {
+              label: templateData.A003Label,
+              value: '单件码'
+            }, {
+              label: templateData.A007Label,
+              value: '零部件号'
+            }); break;
           case 8:
-          tabelColumn.push({
-            label: templateData.A001Label,
-            value: '资产名称'
-          },{
-            label: templateData.A005Label,
-            value: '供应商'
-          },{
-            label: templateData.A006Label,
-            value: '规格型号'
-          },{
-            label: templateData.A902Label,
-            value: '计量单位'
-          },{
-            label: templateData.A051Label,
-            value: '数量'
-          },{
-            label: templateData.A010Label,
-            value: '生产日期'
-          },{
-            label: templateData.A002Label,
-            value: '品种码'
-          }); break;
+            tabelColumn.push({
+              label: templateData.A001Label,
+              value: '资产名称'
+            }, {
+              label: templateData.A005Label,
+              value: '供应商'
+            }, {
+              label: templateData.A006Label,
+              value: '规格型号'
+            }, {
+              label: templateData.A902Label,
+              value: '计量单位'
+            }, {
+              label: templateData.A051Label,
+              value: '数量'
+            }, {
+              label: templateData.A010Label,
+              value: '生产日期'
+            }, {
+              label: templateData.A002Label,
+              value: '品种码'
+            }); break;
           case 9:
-          tabelColumn.push({
-            label: templateData.A001Label,
-            value: '资产名称'
-          },{
-            label: templateData.A005Label,
-            value: '供应商'
-          },{
-            label: templateData.A006Label,
-            value: '规格型号'
-          },{
-            label: templateData.A007Label,
-            value: '零部件号'
-          },{
-            label: templateData.A902Label,
-            value: '计量单位'
-          },{
-            label: templateData.A051Label,
-            value: '数量'
-          },{
-            label: templateData.A002Label,
-            value: '品种码'
-          },{
-            label: templateData.A010Label,
-            value: '生产日期'
-          }); break;
+            tabelColumn.push({
+              label: templateData.A001Label,
+              value: '资产名称'
+            }, {
+              label: templateData.A005Label,
+              value: '供应商'
+            }, {
+              label: templateData.A006Label,
+              value: '规格型号'
+            }, {
+              label: templateData.A007Label,
+              value: '零部件号'
+            }, {
+              label: templateData.A902Label,
+              value: '计量单位'
+            }, {
+              label: templateData.A051Label,
+              value: '数量'
+            }, {
+              label: templateData.A002Label,
+              value: '品种码'
+            }, {
+              label: templateData.A010Label,
+              value: '生产日期'
+            }); break;
         }
 
         this.tabelColumn = tabelColumn
         console.log(this.tabelColumn)
       }
+    },
+    tableRowClassName({ row, rowIndex }) {
+      row.index = rowIndex
+    },
+    delRow(index) {
+      this.tableData.splice(index, 1)
     },
     importExcel(file) {
       const files = { 0: file.raw }
@@ -224,11 +227,11 @@ export default {
           })
           const wsname = workbook.SheetNames[0]
           const ws = XLSX.utils.sheet_to_json(workbook.Sheets[wsname])
-          
+
 
           console.log(ws);
-          
-          this.tabelData = ws
+
+          this.tableData = ws
         } catch (e) {
           this.$Message.error('解析失败!')
           return false

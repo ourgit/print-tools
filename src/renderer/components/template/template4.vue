@@ -1,16 +1,13 @@
 <template>
-  <div :class="['tempate-box', {isEdit}]" :style="{'width':$calcStyle(50,templateData.ratio,'mm'),'height':$calcStyle(50,templateData.ratio,'mm'),'paddingTop':$calcStyle(8,templateData.ratio,'mm')}">
+  <div :class="['tempate-box', {isEdit}]" :style="{'width':$calcStyle(15,templateData.ratio,'mm'),'height':$calcStyle(15,templateData.ratio,'mm')}">
     <canvas id="qrcode"></canvas>
-    <div class="text" :style="{'height':$calcStyle(8,templateData.ratio,'mm'),'fontSize':$calcStyle(7,templateData.ratio,'pt')}" @click="updateItem('A003')">
-      {{ templateData.showA003 ? templateData.A003 : ''}}
-    </div>
   </div>
 </template>
 
 <script>
 import QRCode from "qrcode";
 export default {
-  name: 'Template2',
+  name: 'Template1',
   props: {
     templateData: {
       type: Object,
@@ -39,15 +36,11 @@ export default {
   },
   methods: {
     createQrcode() {
-      const codeWidth = this.$calcRatio(34, this.templateData.ratio)
+      const codeWidth = this.$calcRatio(10, this.templateData.ratio)
       QRCode.toCanvas(document.getElementById("qrcode"), this.templateData.A003, {
         margin: 0,
         width: this.$mmToPx(codeWidth)
       });
-    },
-    updateItem(e) {
-      if (!this.isEdit) return
-      this.$emit('updateItem', e)
     }
   }
 }
@@ -55,22 +48,14 @@ export default {
 
 <style lang="scss" scoped>
 .tempate-box {
-  width: 50mm;
-  height: 50mm;
-  padding-top: 8mm;
+  width: 15mm;
+  height: 15mm;
   display: flex;
   flex-direction: column;
+  justify-content: center;
   align-items: center;
-  overflow: hidden;
   &.isEdit {
     border: 1px solid #000;
-  }
-  .text {
-    height: 8mm;
-    font-size: 7pt;
-    font-family: SimHei;
-    display: flex;
-    align-items: center;
   }
 }
 </style>

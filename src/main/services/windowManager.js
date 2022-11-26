@@ -4,6 +4,8 @@ import menuconfig from '../config/menu'
 import config from '@config'
 import setIpc from './ipcMain'
 import { winURL, loadingURL } from '../config/StaticPath'
+import Store from 'electron-store'
+Store.initRenderer()
 
 var loadWindow = null
 var mainWindow = null
