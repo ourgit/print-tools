@@ -18,6 +18,12 @@
           <template1 v-if="templateId === 1" :templateData="templateData" isEdit :ratio="ratio" @updateItem="updateItem" />
           <template2 v-if="templateId === 2" :templateData="templateData" isEdit :ratio="ratio" @updateItem="updateItem" />
           <template3 v-if="templateId === 3" :templateData="templateData" isEdit :ratio="ratio" />
+          <template4 v-if="templateId === 4" :templateData="templateData" isEdit :ratio="ratio" @updateItem="updateItem" />
+          <template5 v-if="templateId === 5" :templateData="templateData" isEdit :ratio="ratio" @updateItem="updateItem" />
+          <template6 v-if="templateId === 6" :templateData="templateData" isEdit :ratio="ratio" @updateItem="updateItem" />
+          <template7 v-if="templateId === 7" :templateData="templateData" isEdit :ratio="ratio" @updateItem="updateItem" />
+          <template8 v-if="templateId === 8" :templateData="templateData" isEdit :ratio="ratio" @updateItem="updateItem" />
+          <template9 v-if="templateId === 9" :templateData="templateData" isEdit :ratio="ratio" @updateItem="updateItem" />
         </div>
         <div class="btn">
           <el-button @click="reset">重置</el-button>
@@ -64,9 +70,15 @@ import { v4 as uuid } from 'uuid'
 import Template1 from "@/components/template/template1.vue";
 import Template2 from "@/components/template/template2.vue";
 import Template3 from "@/components/template/template3.vue";
+import Template4 from "@/components/template/template4.vue";
+import Template5 from "@/components/template/template5.vue";
+import Template6 from "@/components/template/template6.vue";
+import Template7 from "@/components/template/template7.vue";
+import Template8 from "@/components/template/template8.vue";
+import Template9 from "@/components/template/template9.vue";
 import template from '@/template/index.json'
 export default {
-  components: { Template1, Template2, Template3 },
+  components: { Template1, Template2, Template3, Template4, Template5, Template6, Template7, Template8, Template9 },
   data() {
     return {
       localId: '',
