@@ -1,51 +1,52 @@
 <template>
   <div class="Box">
-    <div class="box1">
-      <canvas id="first" style="width:40mm; height: 15mm;border: 1px solid black;"></canvas>
+    <router-link to="/">首页</router-link>
+    <div class="box1" v-for="(item, index) in firstItem" :key="index">
+      <canvas :id="`first_${index}`" style="width:40mm; height: 15mm;border: 1px solid black;"></canvas>
     </div>
     <p>图1</p>
-    <div class="box2">
-      <div class="box2-canvas"></div>
-      <p>1000000001000000010000001</p>
+    <div class="box2" v-for="(item, index) in secondItem" :key="index">
+      <canvas :id="`second_${index}`"></canvas>
+      <p>{{item.number}}</p>
     </div>
     <p>图2</p>
-    <div class="box3">
-      <div class="box3-canvas"></div>
+    <div class="box3" v-for="(item, index) in thirdItem" :key="index">
+      <canvas :id="`third_${index}`"></canvas>
     </div>
     <p>图3</p>
     <div class="box4">
       <div class="box4-top">资产管理专用标签</div>
       <div class="box4-bottom">
-        <div class="box4-bottom-left"></div>
+        <canvas id="fourth"></canvas>
         <table class="box4-bottom-right">
-           <tr>
+          <tr>
             <td style="width: 11mm;">资产名称:</td>
             <td>春秋常服</td>
-           </tr>
-           <tr> 
+          </tr>
+          <tr>
             <td style="width: 11mm">品 种 码:</td>
             <td>868749282</td>
-           </tr>
-           <tr>
+          </tr>
+          <tr>
             <td style="width: 11mm; ">单 件 码:</td>
             <td>1000000001000000010000001</td>
-           </tr>
-           <tr>
+          </tr>
+          <tr>
             <td style="width: 11mm">管理部门:</td>
             <td>xxx</td>
-           </tr>
+          </tr>
 
         </table>
       </div>
     </div>
     <p>图4</p>
     <div class="box6">
-      <div class="box6-canvas"></div>
+      <canvas id="sixth"></canvas>
       <p>品种码:868749282 零部件名:1/5</p>
     </div>
     <p>图6</p>
     <div class="box7">
-      <div class="box7-canvas"></div>
+      <canvas id="seventh" style="margin-left:8mm"></canvas>
       <p class="box7-p1">1000000001000000010000001</p>
       <p class="box7-p2">零部件名:1/5</p>
     </div>
@@ -57,27 +58,80 @@ import JsBarcode from "jsbarcode";
 import QRCode from "qrcode";
 export default {
   data() {
-    return {}
+    return {
+      firstItem: ["81234567", "82345678", "83456789", "845678912", "856789123"],
+      secondItem: [
+        {
+          msg: '11',
+          number: '1000000001000000010000001'
+        },
+        {
+          msg: '22',
+          number: '1000000001000000010000002'
+        },
+        {
+          msg: '33',
+          number: '1000000001000000010000003'
+        },
+        {
+          msg: '44',
+          number: '1000000001000000010000004'
+        },
+        {
+          msg: '55',
+          number: '1000000001000000010000005'
+        }],
+      thirdItem: ["111", "222", "333", "444", "555"]
+    }
   },
   mounted() {
-    this.createBarCode();
-    this.createQrcode();
+    this.firstItem.forEach((val, index) => {
+      this.createBarCode(index, val)
+      console.log(index, val)
+    })
+    this.secondItem.forEach((val, index) => {
+      console.log(index, val.msg,val.number)
+      this.createQrcode(index, val)
+    })
+    this.thirdItem.forEach((val, index) => {
+      console.log(index, val)
+      this.createQrcode(index, val)
+    })
   },
   methods: {
-    createBarCode() {
-      JsBarcode("#first", "868749282", {
+    createBarCode(index, number) {
+      JsBarcode("#first_" + index, number, {
         background: "#fff",
-        marginTop:this.$mmToPx(5),
-        marginLeft:this.$mmToPx(5),
-        marginRight:this.$mmToPx(5),
+        marginTop: this.$mmToPx(5),
+        marginLeft: this.$mmToPx(5),
+        marginRight: this.$mmToPx(5),
       });
     },
-    createQrcode() {
-      QRCode.toCanvas(document.getElementById("second"), "111", {
-        margin: 4,
-        color: {
-          light: "#fff",
-        },
+    createQrcode(id, val) {
+      QRCode.toCanvas(document.getElementById("second_"+id), val.msg, {
+        margin: 0,
+        width: this.$mmToPx(34),
+        height: this.$mmToPx(34),
+      });
+      QRCode.toCanvas(document.getElementById("third_" + id), val, {
+        margin: 0,
+        width: this.$mmToPx(10),
+        height: this.$mmToPx(10),
+      });
+      QRCode.toCanvas(document.getElementById("fourth"), "123456", {
+        margin: 0,
+        width: this.$mmToPx(18),
+        height: this.$mmToPx(18),
+      });
+      QRCode.toCanvas(document.getElementById("sixth"), "123456", {
+        margin: 0,
+        width: this.$mmToPx(34),
+        height: this.$mmToPx(34),
+      });
+      QRCode.toCanvas(document.getElementById("seventh"), "123456", {
+        margin: 0,
+        width: this.$mmToPx(34),
+        height: this.$mmToPx(34),
       });
     },
   },
@@ -86,37 +140,34 @@ export default {
 <style lang="scss" scoped>
 .Box {
   margin-left: 100px;
+
   .box2 {
-    width:50mm;
+    width: 50mm;
     height: 50mm;
     border: 1px solid black;
     padding: 8mm;
-    &-canvas{
-      width: 34mm;
-      height: 34mm;
-      background: black;
-    }
-    p{
+    margin-top: 20px;
+
+    p {
       font-size: 8pt;
       font-family: '黑体';
     }
   }
-  .box3{
+
+  .box3 {
     width: 15mm;
     height: 15mm;
     border: 1px solid black;
-    &-canvas{
-      width: 10mm;
-      height: 10mm;
-      background: black;
-      margin: 2.5mm;
-    }
+    padding: 2.5mm;
+    margin-top: 20px;
   }
+
   .box4 {
     width: 70mm;
     height: 30mm;
     background: #fff;
     border: 1px solid black;
+
     &-top {
       height: 6mm;
       font-size: 10pt;
@@ -124,15 +175,12 @@ export default {
       margin-top: 2mm;
       margin-left: 22mm;
     }
+
     &-bottom {
       display: flex;
       flex: row;
-      &-left {
-        width: 18mm;
-        height: 18mm;
-        background: black;
-        margin-left: 2mm;
-      }
+      padding-left: 2mm;
+
       &-right {
         width: 46mm;
         height: 18mm;
@@ -142,42 +190,36 @@ export default {
       }
     }
   }
-  .box6{
+
+  .box6 {
     width: 50mm;
     height: 50mm;
     border: 1px solid black;
-    padding-left:8mm;
+    padding-left: 8mm;
     padding-top: 8mm;
-    &-canvas{
-      width: 34mm;
-      height: 34mm;
-      background: black;
-    }
-    p{
+
+    p {
       font-size: 6pt;
       font-family: '黑体';
     }
   }
-  .box7{
+
+  .box7 {
     width: 50mm;
     height: 50mm;
     border: 1px solid black;
     padding-top: 6mm;
-    &-canvas{
-      width: 34mm;
-      height: 34mm;
-      background: black;
-      margin-left: 8mm;
-    }
-    p{
+
+    p {
       font-size: 6pt;
       font-family: '黑体';
       text-align: center;
     }
-    &-p2{
-      text-align: center;
+
+    &-p2 {
       margin-top: -2mm;
-      
+      text-align: center;
+
     }
   }
 }
