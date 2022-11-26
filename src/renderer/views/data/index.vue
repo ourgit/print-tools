@@ -7,11 +7,20 @@
       <div class="title">
         当前标签模板：单件管理标签
       </div>
-      <div class="btn">
+      <div class="btn" style="display: flex;">
+        <el-upload ref="upload" action="" style="margin: 0 10px" :on-change="importExcel" :auto-upload="false" :show-file-list="false">
         <el-button type="primary" size="small">导入</el-button>
-        <el-button type="success" size="small">新增</el-button>
+      </el-upload>
+      
+        <el-button type="success" size="small" @click="dialogTableVisible = true">新增</el-button>
       </div>
     </div>
+    <el-dialog title="收货地址" :visible.sync="dialogTableVisible">
+<!--   <el-table :data="gridData">
+    <el-table-column v-for="(val,index) in tabelColumn"  :label="val.label" width="150"></el-table-column>
+    
+  </el-table> -->
+</el-dialog>
     <div class="main">
       <el-table ref="multipleTable" :data="tabelData" tooltip-effect="dark" :height="`calc(100vh - 180px)`" style="width: 100%">
         <el-table-column type="selection" width="55">
@@ -34,6 +43,8 @@
 
 <script>
 import template from '@/template/index.json'
+import { json } from 'body-parser';
+import XLSX from 'xlsx'
 export default {
   data() {
     return {
@@ -42,10 +53,14 @@ export default {
       tabelColumn: [],
       tabelData: [{
         A002: '868749282'
-      }]
+      }],
+      dialogTableVisible: false,
+      dialogFormVisible: false,
+      gridData:[]
     };
   },
   created() {
+   
     this.templateType = +this.$route.query.type
     this.templateId = +this.$route.query.id
     this.init()
@@ -57,15 +72,169 @@ export default {
           return item.id === this.templateId
         })
         const tabelColumn = []
-        if (this.templateId === 1) {
+
+        switch(this.templateId) {
+          case 1:
           tabelColumn.push({
             label: templateData.A002Label,
-            value: 'A002'
-          })
+            value: '品种码'
+          }); break;
+          case 2:
+          tabelColumn.push({
+            label: templateData.A002Label,
+            value: '品种码'
+          },{
+            label: templateData.A003Label,
+            value: '单件码'
+          }); break;
+          case 3:
+          tabelColumn.push({
+            label: '品种码',
+            value: '品种码'
+          },{
+            label: '单件码',
+            value: '单件码'
+          }); break;
+          case 4:
+          tabelColumn.push({
+            label: templateData.cx,
+            value: '资产名称'
+          },{
+            label: templateData.A002Label,
+            value: '品种码'
+          },{
+            label: templateData.A003Label,
+            value: '单件码'
+          },{
+            label: templateData.deptLabel,
+            value: '管理部门'
+          }); break;
+          case 5:
+          tabelColumn.push({
+            label: templateData.A001Label,
+            value: '资产名称'
+          },{
+            label: templateData.A005Label,
+            value: '供应商'
+          },{
+            label: templateData.A006Label,
+            value: '规格型号'
+          },{
+            label: templateData.A052Label,
+            value: '分箱号'
+          },{
+            label: templateData.A010Label,
+            value: '生产日期'
+          },{
+            label: templateData.A902Label,
+            value: '计量单位'
+          },{
+            label: templateData.A002Label,
+            value: '品种码'
+          },{
+            label: templateData.A003Label,
+            value: '单件码'
+          }); break;
+          case 6:
+          tabelColumn.push({
+            label: templateData.A002Label,
+            value: '品种码'
+          },{
+            label: templateData.A007Label,
+            value: '零部件号'
+          }); break;
+          case 7:
+          tabelColumn.push({
+            label: templateData.A002Label,
+            value: '品种码'
+          },{
+            label: templateData.A003Label,
+            value: '单件码'
+          },{
+            label: templateData.A007Label,
+            value: '零部件号'
+          }); break;
+          case 8:
+          tabelColumn.push({
+            label: templateData.A001Label,
+            value: '资产名称'
+          },{
+            label: templateData.A005Label,
+            value: '供应商'
+          },{
+            label: templateData.A006Label,
+            value: '规格型号'
+          },{
+            label: templateData.A902Label,
+            value: '计量单位'
+          },{
+            label: templateData.A051Label,
+            value: '数量'
+          },{
+            label: templateData.A010Label,
+            value: '生产日期'
+          },{
+            label: templateData.A002Label,
+            value: '品种码'
+          }); break;
+          case 9:
+          tabelColumn.push({
+            label: templateData.A001Label,
+            value: '资产名称'
+          },{
+            label: templateData.A005Label,
+            value: '供应商'
+          },{
+            label: templateData.A006Label,
+            value: '规格型号'
+          },{
+            label: templateData.A007Label,
+            value: '零部件号'
+          },{
+            label: templateData.A902Label,
+            value: '计量单位'
+          },{
+            label: templateData.A051Label,
+            value: '数量'
+          },{
+            label: templateData.A002Label,
+            value: '品种码'
+          },{
+            label: templateData.A010Label,
+            value: '生产日期'
+          }); break;
         }
+
         this.tabelColumn = tabelColumn
         console.log(this.tabelColumn)
       }
+    },
+    importExcel(file) {
+      const files = { 0: file.raw }
+      if (!/\.(xls|xlsx)$/.test(files[0].name.toLowerCase())) {
+        this.$Message.error('上传格式错误!')
+        return false
+      }
+      const fileReader = new FileReader()
+      fileReader.onload = e => {
+        try {
+          const data = e.target.result
+          const workbook = XLSX.read(data, {
+            type: 'binary'
+          })
+          const wsname = workbook.SheetNames[0]
+          const ws = XLSX.utils.sheet_to_json(workbook.Sheets[wsname])
+          
+
+          console.log(ws);
+          
+          this.tabelData = ws
+        } catch (e) {
+          this.$Message.error('解析失败!')
+          return false
+        }
+      }
+      fileReader.readAsBinaryString(files[0])
     }
   }
 };

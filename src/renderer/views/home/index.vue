@@ -68,7 +68,7 @@ export default {
           const workbook = XLSX.read(data, {
             type: 'binary'
           })
-          const wsname = workbook.SheetNames[0]
+          const wsname = workbook.SheetNames[3]
           const ws = XLSX.utils.sheet_to_json(workbook.Sheets[wsname])
           const list = []
           ws.forEach(item => {
@@ -77,8 +77,10 @@ export default {
                 A002: item['品种码']
               })
             }
+            
           })
-          console.log(list)
+          console.log(ws);
+          /* console.log(list) */
 
         } catch (e) {
           this.$Message.error('解析失败!')
