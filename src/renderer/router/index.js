@@ -35,6 +35,11 @@ export const constantRouterMap = [
     hidden: true,
   },
   {
+    path: '/preview',
+    component: () => import('@/views/preview'),
+    hidden: true,
+  },
+  {
     path: '*',
     component: () => import('@/views/404'),
     hidden: true,

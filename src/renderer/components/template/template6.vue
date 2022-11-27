@@ -11,7 +11,7 @@
 <script>
 import QRCode from "qrcode";
 export default {
-  name: 'Template2',
+  name: 'Template6',
   props: {
     templateData: {
       type: Object,

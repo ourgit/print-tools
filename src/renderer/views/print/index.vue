@@ -10,7 +10,6 @@
         <el-button @click="print">打印</el-button>
       </el-form-item>
     </el-form>
-
     <webview id="printWebview" ref="printWebview" :src="fullPath" nodeintegration webpreferences="contextIsolation=no" style="visibility: hidden" />
     <section ref="print">
       <div class="title">一维码</div>
