@@ -7,7 +7,12 @@
       <div class="title">
         打印预览
       </div>
-      <div></div>
+      <div>
+        <el-select v-model="selectedPrinterName" placeholder="请选择打印机">
+          <el-option v-for="item of printerList" :key="item.name" :value="item.name" :title="item.name">
+          </el-option>
+        </el-select>
+      </div>
     </div>
     <div class="preview-wrap">
       <div v-for="(item,index) in printDataList" :key="index">
@@ -23,12 +28,13 @@
       </div>
     </div>
     <div class="btn">
-      <el-button type="primary">打印</el-button>
+      <el-button type="primary" @click="print">打印</el-button>
     </div>
   </div>
 </template>
 
 <script>
+import { ipcRenderer } from 'electron'
 import Template1 from "@/components/template/template1.vue";
 import Template2 from "@/components/template/template2.vue";
 import Template3 from "@/components/template/template3.vue";
@@ -43,10 +49,13 @@ export default {
   data() {
     return {
       templateId: 0,
+      printerList: [],
+      selectedPrinterName: ''
     };
   },
   created() {
     this.templateId = +this.$route.query.id
+    this.getPrinters()
   },
   computed: {
     printDataList() {
@@ -56,6 +65,42 @@ export default {
   methods: {
     goBack() {
       this.$router.back();
+    },
+    getPrinters() {
+      ipcRenderer.send('getPrinterList')
+      ipcRenderer.on('getPrinterList', (event, list) => {
+        list.forEach((item) => {
+          if (item.isDefault) {
+            this.selectedPrinterName = item.name;
+          }
+        });
+        this.printerList = list
+      })
+    },
+    print() {
+      //json方式
+      const printJson = []
+      this.printDataList.forEach(item => {
+        if (this.templateId === 1) {
+          printJson.push({
+            "TemplateId": "template1",
+            "Text": [item.A002],
+            "Code": [item.A002]
+          })
+        }
+      })
+      console.log(printJson)
+      // wewin.LabelPrint(json, {
+      //   debug: false
+      // }, function (data) {
+      //   console.log(data)
+      // });
+      // wewin.LabelPrint(json, {
+      //   noView: this.selectedPrinterName,
+      //   debug: false
+      // }, function (data) {
+      //   console.log(data)
+      // });
     }
   }
 };
@@ -80,7 +125,7 @@ export default {
 }
 .preview-wrap {
   margin: 20px;
-  height: calc(100vh - 140px);
+  height: calc(100vh - 160px);
   border-radius: 5px;
   overflow-y: auto;
   background: #fff;

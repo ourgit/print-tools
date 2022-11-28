@@ -19,7 +19,7 @@
     <el-dialog title="新增数据" :visible.sync="dialogTableVisible">
 
       <el-form :model="form">
-        <el-form-item v-for="(item,index) in tableColumn" :key="index" :label="item.value">
+        <el-form-item v-for="(item,index) in tableColumn" :key="index" :label="item.label">
 
           <el-input v-model="form[item.value]" autocomplete="off"></el-input>
 
@@ -33,20 +33,20 @@
 
     </el-dialog>
     <div class="main">
-      <el-table ref="multipleTable" :data="tableData" tooltip-effect="dark" :row-class-name="tableRowClassName" :height="`calc(100vh - 180px)`" style="width: 100%">
+      <el-table ref="multipleTable" :data="tableData" tooltip-effect="dark" :row-class-name="tableRowClassName" :height="`calc(100vh - 180px)`" style="width: 100%" @selection-change="selectedList = $event">
         <el-table-column type="selection" width="55">
         </el-table-column>
         <el-table-column v-for="(item,index) in tableColumn" :key="index" :prop="item.value" :label="item.label">
         </el-table-column>
         <el-table-column label="操作" align="center" width="200">
-          <template>
-            <el-button type="primary" size="small">打印</el-button>
+          <template #default="{ row }">
+            <el-button type="primary" size="small" @click.stop="printRow(row)">打印</el-button>
             <el-button type="danger" size="small" @click.stop="delRow(row.index)">删除</el-button>
           </template>
         </el-table-column>
       </el-table>
       <div class="btn">
-        <el-button type="primary">批量打印</el-button>
+        <el-button type="primary" @click="batchPrint">批量打印</el-button>
         <el-button @click="clearData">清空数据</el-button>
       </div>
     </div>
@@ -69,8 +69,10 @@ export default {
       tableData: [],
       dialogTableVisible: false,
       dialogFormVisible: false,
+      selectedList: [],
       gridData: [],
       form: {
+
       }
       /*       '品种码':'',
               '单件码':'',
@@ -86,7 +88,6 @@ export default {
     };
   },
   created() {
-
     this.templateType = +this.$route.query.type
     this.templateId = +this.$route.query.id
     if (this.$route.query.localId) {
@@ -252,6 +253,22 @@ export default {
     tableRowClassName({ row, rowIndex }) {
       row.index = rowIndex
     },
+    batchPrint() {
+      if (!this.selectedList.length) {
+        return this.$message({
+          type: 'error',
+          message: '请选择要打印的数据!'
+        })
+      } else {
+        this.$store.commit('app/SET_PRINT_DATA_LIST', this.selectedList)
+        this.$router.push({ path: "/preview", query: { id: this.templateId } })
+      }
+    },
+    printRow(row) {
+      const printList = [row]
+      this.$store.commit('app/SET_PRINT_DATA_LIST', printList)
+      this.$router.push({ path: "/preview", query: { id: this.templateId } })
+    },
     delRow(index) {
       this.tableData.splice(index, 1)
     },
@@ -271,72 +288,70 @@ export default {
           const workbook = XLSX.read(data, {
             type: 'binary'
           })
-          const wsname = workbook.SheetNames[8]
+          const wsname = workbook.SheetNames[0]
           const ws = XLSX.utils.sheet_to_json(workbook.Sheets[wsname])
-          console.log(ws)
           const dataList = []
           ws.forEach(item => {
             const templateData = JSON.parse(JSON.stringify(this.templateData))
             switch (this.templateId) {
               case 1:
-                templateData.A002 = item[templateData.A002Label.replace(/\s*/g, "")]
+                templateData.A002 = item[templateData.A002Label.replace(/\s*/g, "")] || ''
                 break;
               case 2:
-                templateData.A002 = item[templateData.A002Label.replace(/\s*/g, "")]
-                templateData.A003 = item[templateData.A003Label.replace(/\s*/g, "")]
+                templateData.A002 = item[templateData.A002Label.replace(/\s*/g, "")] || ''
+                templateData.A003 = item[templateData.A003Label.replace(/\s*/g, "")] || ''
                 break;
               case 3:
-                templateData.A002 = item[templateData.A002Label.replace(/\s*/g, "")]
-                templateData.A003 = item[templateData.A003Label.replace(/\s*/g, "")]
+                templateData.A002 = item[templateData.A002Label.replace(/\s*/g, "")] || ''
+                templateData.A003 = item[templateData.A003Label.replace(/\s*/g, "")] || ''
                 break;
               case 4:
-                templateData.A001 = item[templateData.A001Label.replace(/\s*/g, "")]
-                templateData.A002 = item[templateData.A002Label.replace(/\s*/g, "")]
-                templateData.A003 = item[templateData.A003Label.replace(/\s*/g, "")]
-                templateData.dept = item[templateData.deptLabel.replace(/\s*/g, "")]
+                templateData.A001 = item[templateData.A001Label.replace(/\s*/g, "")] || ''
+                templateData.A002 = item[templateData.A002Label.replace(/\s*/g, "")] || ''
+                templateData.A003 = item[templateData.A003Label.replace(/\s*/g, "")] || ''
+                templateData.dept = item[templateData.deptLabel.replace(/\s*/g, "")] || ''
                 break;
               case 5:
-                templateData.A001 = item[templateData.A001Label.replace(/\s*/g, "")]
-                templateData.A005 = item[templateData.A005Label.replace(/\s*/g, "")]
-                templateData.A006 = item[templateData.A006Label.replace(/\s*/g, "")]
-                templateData.A052 = item[templateData.A052Label.replace(/\s*/g, "")]
-                templateData.A010 = item[templateData.A010Label.replace(/\s*/g, "")]
-                templateData.A902 = item[templateData.A902Label.replace(/\s*/g, "")]
-                templateData.A002 = item[templateData.A002Label.replace(/\s*/g, "")]
-                templateData.A003 = item[templateData.A003Label.replace(/\s*/g, "")]
+                templateData.A001 = item[templateData.A001Label.replace(/\s*/g, "")] || ''
+                templateData.A005 = item[templateData.A005Label.replace(/\s*/g, "")] || ''
+                templateData.A006 = item[templateData.A006Label.replace(/\s*/g, "")] || ''
+                templateData.A052 = item[templateData.A052Label.replace(/\s*/g, "")] || ''
+                templateData.A010 = item[templateData.A010Label.replace(/\s*/g, "")] || ''
+                templateData.A902 = item[templateData.A902Label.replace(/\s*/g, "")] || ''
+                templateData.A002 = item[templateData.A002Label.replace(/\s*/g, "")] || ''
+                templateData.A003 = item[templateData.A003Label.replace(/\s*/g, "")] || ''
                 break;
               case 6:
-                templateData.A002 = item[templateData.A002Label.replace(/\s*/g, "")]
-                templateData.A007 = item[templateData.A007Label.replace(/\s*/g, "")]
+                templateData.A002 = item[templateData.A002Label.replace(/\s*/g, "")] || ''
+                templateData.A007 = item[templateData.A007Label.replace(/\s*/g, "")] || ''
                 break;
               case 7:
-                templateData.A002 = item[templateData.A002Label.replace(/\s*/g, "")]
-                templateData.A003 = item[templateData.A003Label.replace(/\s*/g, "")]
-                templateData.A007 = item[templateData.A007Label.replace(/\s*/g, "")]
+                templateData.A002 = item[templateData.A002Label.replace(/\s*/g, "")] || ''
+                templateData.A003 = item[templateData.A003Label.replace(/\s*/g, "")] || ''
+                templateData.A007 = item[templateData.A007Label.replace(/\s*/g, "")] || ''
                 break;
               case 8:
-                templateData.A001 = item[templateData.A001Label.replace(/\s*/g, "")]
-                templateData.A005 = item[templateData.A005Label.replace(/\s*/g, "")]
-                templateData.A006 = item[templateData.A006Label.replace(/\s*/g, "")]
-                templateData.A902 = item[templateData.A902Label.replace(/\s*/g, "")]
-                templateData.A051 = item[templateData.A051Label.replace(/\s*/g, "")]
-                templateData.A010 = item[templateData.A010Label.replace(/\s*/g, "")]
-                templateData.A002 = item[templateData.A002Label.replace(/\s*/g, "")]
+                templateData.A001 = item[templateData.A001Label.replace(/\s*/g, "")] || ''
+                templateData.A005 = item[templateData.A005Label.replace(/\s*/g, "")] || ''
+                templateData.A006 = item[templateData.A006Label.replace(/\s*/g, "")] || ''
+                templateData.A902 = item[templateData.A902Label.replace(/\s*/g, "")] || ''
+                templateData.A051 = item[templateData.A051Label.replace(/\s*/g, "")] || ''
+                templateData.A010 = item[templateData.A010Label.replace(/\s*/g, "")] || ''
+                templateData.A002 = item[templateData.A002Label.replace(/\s*/g, "")] || ''
                 break;
               case 9:
-                templateData.A001 = item[templateData.A001Label.replace(/\s*/g, "")]
-                templateData.A005 = item[templateData.A005Label.replace(/\s*/g, "")]
-                templateData.A006 = item[templateData.A006Label.replace(/\s*/g, "")]
-                templateData.A007 = item[templateData.A007Label.replace(/\s*/g, "")]
-                templateData.A902 = item[templateData.A902Label.replace(/\s*/g, "")]
-                templateData.A051 = item[templateData.A051Label.replace(/\s*/g, "")]
-                templateData.A002 = item[templateData.A002Label.replace(/\s*/g, "")]
-                templateData.A010 = item[templateData.A010Label.replace(/\s*/g, "")]
+                templateData.A001 = item[templateData.A001Label.replace(/\s*/g, "")] || ''
+                templateData.A005 = item[templateData.A005Label.replace(/\s*/g, "")] || ''
+                templateData.A006 = item[templateData.A006Label.replace(/\s*/g, "")] || ''
+                templateData.A007 = item[templateData.A007Label.replace(/\s*/g, "")] || ''
+                templateData.A902 = item[templateData.A902Label.replace(/\s*/g, "")] || ''
+                templateData.A051 = item[templateData.A051Label.replace(/\s*/g, "")] || ''
+                templateData.A002 = item[templateData.A002Label.replace(/\s*/g, "")] || ''
+                templateData.A010 = item[templateData.A010Label.replace(/\s*/g, "")] || ''
                 break;
             }
             dataList.push(templateData)
           })
-          console.log(dataList)
           this.tableData = dataList
         } catch (e) {
           this.$Message.error('解析失败!')
@@ -346,19 +361,13 @@ export default {
       fileReader.readAsBinaryString(files[0])
     },
     submitForm() {
-        this.dialogTableVisible = false;
-        const submit = JSON.parse(JSON.stringify(this.form))
-        this.tabelData.push(submit) 
-        this.form = {} 
-      
-      
-    },
-    delRow(index){
-      this.tabelData.splice(index,1)
-
+      this.dialogTableVisible = false;
+      const submit = JSON.parse(JSON.stringify(this.form))
+      this.tableData.push(submit)
+      this.form = {}
     }
   }
-  }
+};
 </script>
 <style lang="scss" scoped>
 .top {
@@ -387,9 +396,6 @@ export default {
   .btn {
     padding: 20px;
   }
-}
-.cell{
-  display: flex!important;
 }
 </style>
 
