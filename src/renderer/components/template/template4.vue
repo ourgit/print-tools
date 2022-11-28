@@ -3,13 +3,15 @@
     <div class="title" :style="{'fontSize':$calcStyle(10,templateData.ratio,'pt'),'height':$calcStyle(8,templateData.ratio,'mm')}" @click="updateItem('Title')">
       {{ templateData.showTitle ? templateData.TitleLabel : ''}}
     </div>
-    <div class="content">
-      <canvas id="qrcode"></canvas>
+    <div class="content" :style="{'paddingLeft':$calcStyle(2,templateData.ratio,'mm'),'paddingRight':$calcStyle(2,templateData.ratio,'mm')}">
+      <div class="qrcode" :style="{'width':$calcStyle(18,templateData.ratio,'mm')}">
+        <canvas id="qrcode"></canvas>
+      </div>
       <div class="text-list" :style="{'fontSize':$calcStyle(7,templateData.ratio,'pt'),'marginLeft':$calcStyle(2,templateData.ratio,'mm')}">
-        <div class="text-item" :style="{'marginBottom':$calcStyle(1,templateData.ratio,'mm')}" @click="updateItem('A001')">{{ templateData.showA001 ?  templateData.A001Label + ':' + templateData.A001 : ''}}</div>
-        <div class="text-item" :style="{'marginBottom':$calcStyle(1,templateData.ratio,'mm')}" @click="updateItem('A002')">{{ templateData.showA002 ?  templateData.A002Label + ':' + templateData.A002 : ''}}</div>
-        <div class="text-item" :style="{'marginBottom':$calcStyle(1,templateData.ratio,'mm')}" @click="updateItem('A003')">{{ templateData.showA003 ?  templateData.A003Label + ':' + templateData.A003 : ''}}</div>
-        <div class="text-item" :style="{'marginBottom':$calcStyle(1,templateData.ratio,'mm')}" @click="updateItem('dept')">{{ templateData.showDept ?  templateData.deptLabel + ':' + templateData.dept : ''}}</div>
+        <div class="text-item" v-if="templateData.showA001" :style="{'marginBottom':$calcStyle(1,templateData.ratio,'mm')}" @click="updateItem('A001')">{{  templateData.A001Label + ':' + templateData.A001 }}</div>
+        <div class="text-item" v-if="templateData.showA002" :style="{'marginBottom':$calcStyle(1,templateData.ratio,'mm')}" @click="updateItem('A002')">{{ templateData.A002Label + ':' + templateData.A002}}</div>
+        <div class="text-item" v-if="templateData.showA003" :style="{'marginBottom':$calcStyle(1,templateData.ratio,'mm')}" @click="updateItem('A003')">{{ templateData.A003Label + ':' + templateData.A003}}</div>
+        <div class="text-item" v-if="templateData.showDept" :style="{'marginBottom':$calcStyle(1,templateData.ratio,'mm')}" @click="updateItem('dept')">{{ templateData.deptLabel + ':' + templateData.dept}}</div>
       </div>
     </div>
   </div>
@@ -18,7 +20,7 @@
 <script>
 import QRCode from "qrcode";
 export default {
-  name: 'Template1',
+  name: 'Template4',
   props: {
     templateData: {
       type: Object,
@@ -67,7 +69,6 @@ export default {
   height: 30mm;
   display: flex;
   flex-direction: column;
-  align-items: center;
   overflow: hidden;
   &.isEdit {
     border: 1px solid #000;
@@ -78,12 +79,19 @@ export default {
     font-family: SimHei;
     font-weight: 700;
     display: flex;
+    justify-content: center;
     align-items: center;
   }
   .content {
     display: flex;
     align-items: center;
+    padding-left: 2mm;
+    padding-right: 2mm;
+    .qrcode {
+      width: 18mm;
+    }
     .text-list {
+      flex: 1;
       margin-left: 2mm;
       display: flex;
       flex-direction: column;
