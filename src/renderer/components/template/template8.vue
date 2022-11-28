@@ -3,7 +3,7 @@
     <div class="content" :style="{'height':$calcStyle(45,templateData.ratio,'mm')}">
       <div class="left-box" :style="{'width':$calcStyle(40,templateData.ratio,'mm')}">
         <div class="qrcode" :style="{'height':$calcStyle(36,templateData.ratio,'mm')}">
-          <canvas id="qrcode"></canvas>
+          <img :src="qrCodeUrl" :style="{'width':$calcStyle(34,templateData.ratio,'mm'),'height':$calcStyle(34,templateData.ratio,'mm')}">
         </div>
         <div class="left-text" :style="{'height':$calcStyle(9,templateData.ratio,'mm'),'fontSize':$calcStyle(7,templateData.ratio,'pt')}" @click="updateItem('A002')">{{ templateData.showA002 ?  templateData.A002Label + ':' + templateData.A002 : ''}}</div>
       </div>
@@ -66,16 +66,24 @@ export default {
       }
     }
   },
+  data() {
+    return {
+      qrCodeUrl: ''
+    };
+  },
   mounted() {
     this.createQrcode()
   },
   methods: {
     createQrcode() {
       const codeWidth = this.$calcRatio(34, this.templateData.ratio)
-      QRCode.toCanvas(document.getElementById("qrcode"), this.templateData.A002, {
+      const codeContent = '\u001E07\u001DA002' + this.templateData.A002 + '\u001DA003' + this.templateData.A003 + '\u001DA001' + this.templateData.A001 + '\u001E\u0004'
+      QRCode.toDataURL(codeContent, {
         margin: 0,
         width: this.$mmToPx(codeWidth)
-      });
+      }).then(res => {
+        this.qrCodeUrl = res
+      })
     },
     updateItem(e) {
       console.log(e)

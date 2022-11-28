@@ -1,6 +1,6 @@
 <template>
   <div :class="['tempate-box', {isEdit}]" :style="{'width':$calcStyle(50,templateData.ratio,'mm'),'height':$calcStyle(50,templateData.ratio,'mm'),'paddingTop':$calcStyle(6,templateData.ratio,'mm')}">
-    <canvas id="qrcode"></canvas>
+    <img :src="qrCodeUrl" :style="{'width':$calcStyle(34,templateData.ratio,'mm'),'height':$calcStyle(34,templateData.ratio,'mm')}">
     <div class="text" :style="{'fontSize':$calcStyle(7,templateData.ratio,'pt')}">
       <div class="text-item" :style="{'paddingTop':$calcStyle(1,templateData.ratio,'mm')}" @click="updateItem('A003')">{{ templateData.showA003 ? templateData.A003 : ''}}</div>
       <div class="text-item" :style="{'paddingTop':$calcStyle(1,templateData.ratio,'mm')}" @click="updateItem('A007')">{{ templateData.showA007 ? templateData.A007Label + ':' + templateData.A007 : ''}}</div>
@@ -28,6 +28,11 @@ export default {
       default: false,
     },
   },
+  data() {
+    return {
+      qrCodeUrl: ''
+    };
+  },
   watch: {
     ratio: {
       handler(e) {
@@ -41,10 +46,13 @@ export default {
   methods: {
     createQrcode() {
       const codeWidth = this.$calcRatio(34, this.templateData.ratio)
-      QRCode.toCanvas(document.getElementById("qrcode"), this.templateData.A002, {
+      const codeContent = '\u001E07\u001DA002' + this.templateData.A002 + '\u001DA003' + this.templateData.A003 + '\u001DA001' + this.templateData.A001 + '\u001E\u0004'
+      QRCode.toDataURL(codeContent, {
         margin: 0,
         width: this.$mmToPx(codeWidth)
-      });
+      }).then(res => {
+        this.qrCodeUrl = res
+      })
     },
     updateItem(e) {
       if (!this.isEdit) return

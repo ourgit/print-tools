@@ -1,6 +1,6 @@
 <template>
   <div :class="['tempate-box', {isEdit}]" :style="{'width':$calcStyle(15,templateData.ratio,'mm'),'height':$calcStyle(15,templateData.ratio,'mm')}">
-    <canvas id="qrcode"></canvas>
+    <img :src="qrCodeUrl" :style="{'width':$calcStyle(10,templateData.ratio,'mm'),'height':$calcStyle(10,templateData.ratio,'mm')}">
   </div>
 </template>
 
@@ -24,6 +24,11 @@ export default {
       default: false,
     },
   },
+  data() {
+    return {
+      qrCodeUrl: ''
+    };
+  },
   watch: {
     ratio: {
       handler(e) {
@@ -37,11 +42,13 @@ export default {
   methods: {
     createQrcode() {
       const codeWidth = this.$calcRatio(10, this.templateData.ratio)
-      console.log(codeWidth)
-      QRCode.toCanvas(document.getElementById("qrcode"), this.templateData.A003, {
+      const codeContent = '\u001E07\u001DA002' + this.templateData.A002 + '\u001DA003' + this.templateData.A003 + '\u001E\u0004'
+      QRCode.toDataURL(codeContent, {
         margin: 0,
         width: this.$mmToPx(codeWidth)
-      });
+      }).then(res => {
+        this.qrCodeUrl = res
+      })
     }
   }
 }

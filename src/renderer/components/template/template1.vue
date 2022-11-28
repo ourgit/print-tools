@@ -35,6 +35,7 @@ export default {
     }
   },
   mounted() {
+    console.log(this.templateData)
     this.createBarCode()
   },
   methods: {
