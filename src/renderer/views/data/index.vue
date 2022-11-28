@@ -39,9 +39,9 @@
         <el-table-column v-for="(item,index) in tabelColumn" :key="index" :prop="item.value" :label="item.label">
         </el-table-column>
         <el-table-column label="操作" align="center">
-          <template>
-            <el-button type="primary" size="small">打印</el-button>
-            <el-button type="danger" size="small">删除</el-button>
+          <template #default="{ row }">
+            <el-button type="primary" size="small" >打印</el-button>
+            <el-button type="danger" size="small" @click.stop="delRow(row.index)">删除</el-button>
           </template>
         </el-table-column>
       </el-table>
@@ -69,7 +69,7 @@ export default {
       dialogFormVisible: false,
       gridData:[],
       form:{
-
+        
       }
 /*       '品种码':'',
         '单件码':'',
@@ -263,13 +263,18 @@ export default {
       fileReader.readAsBinaryString(files[0])
     },
     submitForm() {
-      this.dialogTableVisible = false;
+        this.dialogTableVisible = false;
       const submit = JSON.parse(JSON.stringify(this.form))
-      this.tabelData.push(submit)
-      this.form = {}
+        this.tabelData.push(submit) 
+        this.form = {} 
+      
+      
+    },
+    delRow(index){
+      this.tabelData.splice(index,1)
     }
   }
-};
+  }
 </script>
 <style lang="scss" scoped>
 .top {
@@ -298,6 +303,9 @@ export default {
   .btn {
     padding: 20px;
   }
+}
+.cell{
+  display: flex!important;
 }
 </style>
 
