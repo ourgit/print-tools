@@ -265,6 +265,7 @@ export default {
       }
     },
     printRow(row) {
+      console.log(row)
       const printList = [row]
       this.$store.commit('app/SET_PRINT_DATA_LIST', printList)
       this.$router.push({ path: "/preview", query: { id: this.templateId } })
@@ -288,7 +289,7 @@ export default {
           const workbook = XLSX.read(data, {
             type: 'binary'
           })
-          const wsname = workbook.SheetNames[0]
+          const wsname = workbook.SheetNames[3]
           const ws = XLSX.utils.sheet_to_json(workbook.Sheets[wsname])
           const dataList = []
           ws.forEach(item => {

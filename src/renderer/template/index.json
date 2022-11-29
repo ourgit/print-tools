@@ -2,6 +2,8 @@
   {
     "id": 1,
     "name": "一维品牌标签",
+    "pageWidth": 40,
+    "pageHeight": 15,
     "ratio": 100,
     "A002Label": "品种码",
     "A002ShowLabel": false,
@@ -11,6 +13,8 @@
   {
     "id": 2,
     "name": "单件标签",
+    "pageWidth": 50,
+    "pageHeight": 50,
     "ratio": 100,
     "A002Label": "品种码",
     "A002ShowLabel": false,
@@ -23,6 +27,8 @@
   {
     "id": 3,
     "name": "单件微型标签",
+    "pageWidth": 15,
+    "pageHeight": 15,
     "ratio": 100,
     "A002Label": "品种码",
     "A002": "867546112",
@@ -32,6 +38,8 @@
   {
     "id": 6,
     "name": "零部件品种标签",
+    "pageWidth": 50,
+    "pageHeight": 50,
     "ratio": 100,
     "A002Label": "品种码",
     "A002ShowLabel": true,
@@ -45,6 +53,8 @@
   {
     "id": 7,
     "name": "零部件单件标签",
+    "pageWidth": 50,
+    "pageHeight": 50,
     "ratio": 100,
     "A002Label": "品种码",
     "A003Label": "单件码",
@@ -60,6 +70,8 @@
   {
     "id": 4,
     "name": "单件管理标签",
+    "pageWidth": 70,
+    "pageHeight": 30,
     "ratio": 100,
     "TitleLabel": "资产管理专用标签",
     "TitleShowLabel": true,
@@ -84,6 +96,8 @@
   {
     "id": 5,
     "name": "单件分箱标签",
+    "pageWidth": 10,
+    "pageHeight": 50,
     "ratio": 100,
     "A002Label": "品种码",
     "A002ShowLabel": true,
@@ -121,6 +135,8 @@
   {
     "id": 8,
     "name": "多个单品种标签",
+    "pageWidth": 10,
+    "pageHeight": 50,
     "ratio": 100,
     "A002Label": "品种码",
     "A002ShowLabel": true,
@@ -154,6 +170,8 @@
   {
     "id": 9,
     "name": "多个单品种零部件标签",
+    "pageWidth": 10,
+    "pageHeight": 50,
     "ratio": 100,
     "A002Label": "品种码",
     "A002ShowLabel": true,

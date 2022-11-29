@@ -1,9 +1,11 @@
 // 打印类属性、方法定义
 /* eslint-disable */
-const Print = function (dom, printName, webview) {
-  if (!(this instanceof Print)) return new Print(dom, printName, webview)
+const Print = function (dom, printName, webview, pageWidth, pageHeight) {
+  if (!(this instanceof Print)) return new Print(dom, printName, webview, pageWidth, pageHeight)
   this.printName = printName
   this.webview = webview
+  this.pageWidth = pageWidth
+  this.pageHeight = pageHeight
   if (typeof dom === 'string') {
     this.dom = document.querySelector(dom)
   } else {
@@ -27,7 +29,12 @@ Print.prototype = {
     for (var i = 0; i < styles.length; i++) {
       str += styles[i].outerHTML
     }
-    str += '<style>html,body,div{height: auto!important;margin:0;padding:0}</style>'
+    str +=
+      '<style>html,body,div{height: auto!important;margin:0;padding:0}@page{size:' +
+      this.pageWidth +
+      ' ' +
+      this.pageHeight +
+      '!important;margin: 0px;}</style>'
     return str
   },
 
