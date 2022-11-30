@@ -5,7 +5,7 @@
         <i class="el-icon-arrow-left"></i>
       </div>
       <div class="title">
-        打印预览--{{msg}}
+        打印预览
       </div>
       <div>
         <el-select v-model="selectedPrinterName" placeholder="请选择打印机">
@@ -63,7 +63,6 @@ export default {
       selectedPrinterName: '',
       fullPath: fullPath,
       printIndex: 0,
-      msg: ''
     };
   },
   created() {
@@ -72,9 +71,7 @@ export default {
   },
   mounted() {
     const webview = this.$refs.printWebview;
-    console.log('webview')
     webview.addEventListener("ipc-message", (event) => {
-      console.log('webview111')
       if (event.channel === "webview-print-do") {
         webview
           .print({

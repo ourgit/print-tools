@@ -22,10 +22,19 @@ import Print from '@/utils/print'
 
 Vue.use(Print)
 
+import * as filters from '@/utils/filters'
+Object.keys(filters).forEach(key => {
+  Vue.prototype[`$${key}`] = filters[key]
+  Vue.filter(key, filters[key])
+})
+
+
 import { mmToPx, calcStyle, calcRatio } from '@/utils/unitConversion'
 Vue.prototype.$mmToPx = mmToPx
 Vue.prototype.$calcStyle = calcStyle
 Vue.prototype.$calcRatio = calcRatio
+
+
 
 Vue.use(ElementUI)
 
