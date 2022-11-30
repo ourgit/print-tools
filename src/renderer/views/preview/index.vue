@@ -5,7 +5,7 @@
         <i class="el-icon-arrow-left"></i>
       </div>
       <div class="title">
-        打印预览
+        打印预览--{{msg}}
       </div>
       <div>
         <el-select v-model="selectedPrinterName" placeholder="请选择打印机">
@@ -31,13 +31,14 @@
       </div>
     </div>
     <div class="btn">
-      <el-button type="primary" @click="printTest">打印</el-button>
+      <el-button type="primary" @click="print">打印</el-button>
     </div>
   </div>
 </template>
 
 <script>
 import { ipcRenderer } from 'electron'
+import path from 'path'
 import Template1 from "@/components/template/template1.vue";
 import Template2 from "@/components/template/template2.vue";
 import Template3 from "@/components/template/template3.vue";
@@ -47,6 +48,12 @@ import Template6 from "@/components/template/template6.vue";
 import Template7 from "@/components/template/template7.vue";
 import Template8 from "@/components/template/template8.vue";
 import Template9 from "@/components/template/template9.vue";
+let fullPath = ''
+if (process.env.NODE_ENV === 'development') {
+  fullPath = '/static/print.html';
+} else {
+  fullPath = path.join(__static, 'print.html');
+}
 export default {
   components: { Template1, Template2, Template3, Template4, Template5, Template6, Template7, Template8, Template9 },
   data() {
@@ -54,8 +61,9 @@ export default {
       templateId: 0,
       printerList: [],
       selectedPrinterName: '',
-      fullPath: '/static/print.html',
+      fullPath: fullPath,
       printIndex: 0,
+      msg: ''
     };
   },
   created() {
@@ -64,7 +72,9 @@ export default {
   },
   mounted() {
     const webview = this.$refs.printWebview;
+    console.log('webview')
     webview.addEventListener("ipc-message", (event) => {
+      console.log('webview111')
       if (event.channel === "webview-print-do") {
         webview
           .print({
@@ -79,13 +89,10 @@ export default {
             } else {
               this.printIndex = 0
             }
-            // this.messageBox.close();
           })
           .catch((err) => {
-            // this.messageBox.close();
           })
           .finally(() => {
-            // this.messageBox.close();
           });
       }
     });
@@ -110,114 +117,18 @@ export default {
         this.printerList = list
       })
     },
-    printTest() {
+    print() {
+      if (!this.selectedPrinterName) {
+        return this.$message({
+          message: "请先选择打印机",
+          type: "warning",
+        });
+      }
       const id = 'print' + this.printIndex
       const templateData = this.printDataList[0]
       const pageWidth = this.$calcStyle(templateData.pageWidth, templateData.ratio, 'mm')
       const pageHeight = this.$calcStyle(templateData.pageHeight, templateData.ratio, 'mm')
       this.$print(this.$refs[id][0], this.selectedPrinterName, this.$refs.printWebview, pageWidth, pageHeight)
-    },
-    print() {
-      //json方式
-      const printJson = []
-      this.printDataList.forEach(item => {
-        if (this.templateId === 1) {
-          printJson.push({
-            "TemplateId": "template1",
-            "Text": [item.A002],
-            "Code": [item.A002],
-            "Hidden": [],
-            "Ratio": item.ratio
-          })
-        } else if (this.templateId === 2) {
-          const codeContent = '\u001E07\u001DA002' + item.A002 + '\u001DA003' + item.A003 + '\u001E\u0004'
-          printJson.push({
-            "TemplateId": "template2",
-            "Text": [item.A003],
-            "Code": [codeContent],
-            "Hidden": [],
-            "Ratio": item.ratio
-          })
-        } else if (this.templateId === 3) {
-          const codeContent = '\u001E07\u001DA002' + item.A002 + '\u001DA003' + item.A003 + '\u001E\u0004'
-          printJson.push({
-            "TemplateId": "template3",
-            "Text": [],
-            "Code": [codeContent],
-            "Hidden": [],
-            "Ratio": item.ratio
-          })
-        } else if (this.templateId === 4) {
-          const codeContent = '\u001E07\u001DA002' + item.A002 + '\u001DA003' + item.A003 + '\u001DA001' + item.A001 + '\u001E\u0004'
-          printJson.push({
-            "TemplateId": "template4",
-            "Text": [],
-            "Code": [codeContent],
-            "Hidden": [],
-            "Ratio": item.ratio
-          })
-        } else if (this.templateId === 5) {
-          const codeContent = '\u001E07\u001DA002' + item.A002 + '\u001DA003' + item.A003 + '\u001DA052' + item.A052 + '\u001E\u0004'
-          printJson.push({
-            "TemplateId": "template5",
-            "Text": [],
-            "Code": [codeContent],
-            "Hidden": [],
-            "Ratio": item.ratio
-          })
-        } else if (this.templateId === 6) {
-          const codeContent = '\u001E07\u001DA002' + item.A002 + '\u001DA007' + item.A007 + '\u001E\u0004'
-          const text1 = item.A002Label + ':' + item.A002
-          const text2 = item.A007Label + ':' + item.A007
-          printJson.push({
-            "TemplateId": "template6",
-            "Text": [text1, text2],
-            "Code": [codeContent],
-            "Hidden": [],
-            "Ratio": item.ratio
-          })
-        } else if (this.templateId === 7) {
-          const codeContent = '\u001E07\u001DA002' + item.A002 + '\u001DA003' + item.A003 + '\u001DA007' + item.A007 + '\u001E\u0004'
-          printJson.push({
-            "TemplateId": "template7",
-            "Text": [],
-            "Code": [codeContent],
-            "Hidden": [],
-            "Ratio": item.ratio
-          })
-        } else if (this.templateId === 8) {
-          const codeContent = '\u001E07\u001DA002' + item.A002 + '\u001DA051' + item.A051 + '\u001E\u0004'
-          printJson.push({
-            "TemplateId": "template8",
-            "Text": [],
-            "Code": [codeContent],
-            "Hidden": [],
-            "Ratio": item.ratio
-          })
-        } else if (this.templateId === 9) {
-          const codeContent = '\u001E07\u001DA002' + item.A002 + '\u001DA051' + item.A051 + '\u001DA007' + item.A007 + '\u001E\u0004'
-          printJson.push({
-            "TemplateId": "template9",
-            "Text": [],
-            "Code": [codeContent],
-            "Hidden": [],
-            "Ratio": item.ratio
-          })
-        }
-      })
-      console.log(printJson)
-      wewin.LabelPrint(printJson, {
-        alert: true,
-        debug: false
-      }, function (data) {
-        console.log(data)
-      });
-      // wewin.LabelPrint(printJson, {
-      //   noView: this.selectedPrinterName,
-      //   debug: false
-      // }, function (data) {
-      //   console.log(data)
-      // });
     }
   }
 };

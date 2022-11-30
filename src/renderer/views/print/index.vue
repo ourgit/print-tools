@@ -22,6 +22,7 @@
 
 <script>
 import { ipcRenderer } from 'electron'
+import path from 'path'
 import JsBarcode from 'jsbarcode'
 import QRCode from "qrcode";
 export default {
@@ -29,7 +30,7 @@ export default {
     return {
       printerList: [],
       selectedPrinterName: '',
-      fullPath: '/static/print.html',
+      fullPath: path.join(__static, 'print.html'),
     };
   },
   mounted() {

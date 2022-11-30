@@ -33,6 +33,9 @@ export const constantRouterMap = [
     path: '/data',
     component: () => import('@/views/data'),
     hidden: true,
+    meta: {
+      keepAlive: true,
+    },
   },
   {
     path: '/preview',

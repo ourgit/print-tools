@@ -6,33 +6,17 @@
       </router-link>
       <div class="title">当前标签模板：{{ templateData.name }}</div>
       <div class="btn" style="display: flex">
-        <el-upload
-          ref="upload"
-          action=""
-          style="margin: 0 10px"
-          :on-change="importExcel"
-          :auto-upload="false"
-          :show-file-list="false"
-        >
+        <el-upload ref="upload" action="" style="margin: 0 10px" :on-change="importExcel" :auto-upload="false" :show-file-list="false">
           <el-button type="primary" size="small">导入</el-button>
         </el-upload>
 
-        <el-button
-          type="success"
-          size="small"
-          @click="dialogTableVisible = true"
-          >新增</el-button
-        >
+        <el-button type="success" size="small" @click="dialogTableVisible = true">新增</el-button>
       </div>
     </div>
     <!-- 弹出 -->
     <el-dialog title="新增数据" :visible.sync="dialogTableVisible">
       <el-form :model="form">
-        <el-form-item
-          v-for="(item, index) in tableColumn"
-          :key="index"
-          :label="item.label"
-        >
+        <el-form-item v-for="(item, index) in tableColumn" :key="index" :label="item.label">
           <el-input v-model="form[item.value]" autocomplete="off"></el-input>
         </el-form-item>
       </el-form>
@@ -42,34 +26,14 @@
       </div>
     </el-dialog>
     <div class="main">
-      <el-table
-        ref="multipleTable"
-        :data="tableData"
-        tooltip-effect="dark"
-        :row-class-name="tableRowClassName"
-        :height="`calc(100vh - 180px)`"
-        style="width: 100%"
-        @selection-change="selectedList = $event"
-      >
+      <el-table ref="multipleTable" :data="tableData" tooltip-effect="dark" :row-class-name="tableRowClassName" :height="`calc(100vh - 180px)`" style="width: 100%" @selection-change="selectedList = $event">
         <el-table-column type="selection" width="55"> </el-table-column>
-        <el-table-column
-          v-for="(item, index) in tableColumn"
-          :key="index"
-          :prop="item.value"
-          :label="item.label"
-        >
+        <el-table-column v-for="(item, index) in tableColumn" :key="index" :prop="item.value" :label="item.label">
         </el-table-column>
         <el-table-column label="操作" align="center" width="200">
           <template #default="{ row }">
-            <el-button type="primary" size="small" @click.stop="printRow(row)"
-              >打印</el-button
-            >
-            <el-button
-              type="danger"
-              size="small"
-              @click.stop="delRow(row.index)"
-              >删除</el-button
-            >
+            <el-button type="primary" size="small" @click.stop="printRow(row)">打印</el-button>
+            <el-button type="danger" size="small" @click.stop="delRow(row.index)">删除</el-button>
           </template>
         </el-table-column>
       </el-table>
@@ -395,7 +359,7 @@ export default {
           const workbook = XLSX.read(data, {
             type: "binary",
           });
-          const wsname = workbook.SheetNames[4];
+          const wsname = workbook.SheetNames[0];
           const ws = XLSX.utils.sheet_to_json(workbook.Sheets[wsname]);
           const dataList = [];
           ws.forEach((item) => {
@@ -436,9 +400,7 @@ export default {
                   item[templateData.A006Label.replace(/\s*/g, "")] || "";
                 templateData.A052 =
                   item[templateData.A052Label.replace(/\s*/g, "")] || "";
-                templateData.TEMP =
-                  item[templateData.A010Label.replace(/\s*/g, "")] || "";
-                templateData.A010 = this.formatExcelDate(templateData.TEMP);
+                templateData.A010 = this.formatExcelDate(item[templateData.A010Label.replace(/\s*/g, "")] || "");
 
                 templateData.A902 =
                   item[templateData.A902Label.replace(/\s*/g, "")] || "";
@@ -462,40 +424,24 @@ export default {
                   item[templateData.A007Label.replace(/\s*/g, "")] || "";
                 break;
               case 8:
-                templateData.A001 =
-                  item[templateData.A001Label.replace(/\s*/g, "")] || "";
-                templateData.A005 =
-                  item[templateData.A005Label.replace(/\s*/g, "")] || "";
-                templateData.A006 =
-                  item[templateData.A006Label.replace(/\s*/g, "")] || "";
-                templateData.A902 =
-                  item[templateData.A902Label.replace(/\s*/g, "")] || "";
-                templateData.A051 =
-                  item[templateData.A051Label.replace(/\s*/g, "")] || "";
-                templateData.TEMP =
-                  item[templateData.A010Label.replace(/\s*/g, "")] || "";
-                templateData.A010 = this.formatExcelDate(templateData.TEMP);
+                templateData.A001 = item[templateData.A001Label.replace(/\s*/g, "")] || "";
+                templateData.A005 = item[templateData.A005Label.replace(/\s*/g, "")] || "";
+                templateData.A006 = item[templateData.A006Label.replace(/\s*/g, "")] || "";
+                templateData.A902 = item[templateData.A902Label.replace(/\s*/g, "")] || "";
+                templateData.A051 = item[templateData.A051Label.replace(/\s*/g, "")] || "";
+                templateData.A010 = this.formatExcelDate(item[templateData.A010Label.replace(/\s*/g, "")] || "");
                 templateData.A002 =
                   item[templateData.A002Label.replace(/\s*/g, "")] || "";
                 break;
               case 9:
-                templateData.A001 =
-                  item[templateData.A001Label.replace(/\s*/g, "")] || "";
-                templateData.A005 =
-                  item[templateData.A005Label.replace(/\s*/g, "")] || "";
-                templateData.A006 =
-                  item[templateData.A006Label.replace(/\s*/g, "")] || "";
-                templateData.A007 =
-                  item[templateData.A007Label.replace(/\s*/g, "")] || "";
-                templateData.A902 =
-                  item[templateData.A902Label.replace(/\s*/g, "")] || "";
-                templateData.A051 =
-                  item[templateData.A051Label.replace(/\s*/g, "")] || "";
-                templateData.A002 =
-                  item[templateData.A002Label.replace(/\s*/g, "")] || "";
-                templateData.TEMP =
-                  item[templateData.A010Label.replace(/\s*/g, "")] || "";
-                templateData.A010 = this.formatExcelDate(templateData.TEMP);
+                templateData.A001 = item[templateData.A001Label.replace(/\s*/g, "")] || "";
+                templateData.A005 = item[templateData.A005Label.replace(/\s*/g, "")] || "";
+                templateData.A006 = item[templateData.A006Label.replace(/\s*/g, "")] || "";
+                templateData.A007 = item[templateData.A007Label.replace(/\s*/g, "")] || "";
+                templateData.A902 = item[templateData.A902Label.replace(/\s*/g, "")] || "";
+                templateData.A051 = item[templateData.A051Label.replace(/\s*/g, "")] || "";
+                templateData.A002 = item[templateData.A002Label.replace(/\s*/g, "")] || "";
+                templateData.A010 = this.formatExcelDate(item[templateData.A010Label.replace(/\s*/g, "")] || "");
                 break;
             }
             dataList.push(templateData);

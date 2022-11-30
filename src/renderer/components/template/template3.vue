@@ -41,9 +41,10 @@ export default {
   },
   methods: {
     createQrcode() {
-      const codeWidth = this.$calcRatio(10, this.templateData.ratio)
+      const codeWidth = this.$calcRatio(30, this.templateData.ratio)
       const codeContent = '\u001E07\u001DA002' + this.templateData.A002 + '\u001DA003' + this.templateData.A003 + '\u001E\u0004'
       QRCode.toDataURL(codeContent, {
+        errorCorrectionLevel: 'L',
         margin: 0,
         width: this.$mmToPx(codeWidth)
       }).then(res => {

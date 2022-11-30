@@ -35,6 +35,12 @@
           <div class="title">缩放设置</div>
           <div class="option-list">
             <div class="option-item">
+              <div class="label">模板尺寸</div>
+              <div class="value">
+                {{$calcStyle(templateData.pageWidth,templateData.ratio,'mm')}} * {{$calcStyle(templateData.pageHeight,templateData.ratio,'mm')}}
+              </div>
+            </div>
+            <div class="option-item">
               <div class="value">
                 <el-slider v-model="ratio" :step="1" :min="-300" :max="500" :format-tooltip="formatTooltip"></el-slider>
               </div>
@@ -227,6 +233,7 @@ export default {
           background: transparent;
         }
         .option-item {
+          margin-bottom: 10px;
           .label {
             font-size: 14px;
             color: #666;

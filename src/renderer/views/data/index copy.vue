@@ -19,7 +19,7 @@
     <el-dialog title="新增数据" :visible.sync="dialogTableVisible">
 
       <el-form :model="form">
-        <el-form-item v-for="(item,index) in tableColumn" :key="index" :label="item.value">
+        <el-form-item v-for="(item,index) in tableColumn" :key="index" :label="item.label">
 
           <el-input v-model="form[item.value]" autocomplete="off"></el-input>
 
@@ -66,6 +66,7 @@ export default {
       localId: '',
       templateData: {},
       tableColumn: [],
+      tempList: [],
       tableData: [],
       dialogTableVisible: false,
       dialogFormVisible: false,
@@ -74,17 +75,6 @@ export default {
       form: {
 
       }
-      /*       '品种码':'',
-              '单件码':'',
-              '资产名称':'',
-              '管理部门':'',
-              '供应商':'',
-              '规格型号':'',
-              '分箱号':'',
-              '生产日期':'',
-              '数量':'',
-              '零部件号':'',
-              '计量单位':'' */
     };
   },
   created() {
@@ -265,6 +255,7 @@ export default {
       }
     },
     printRow(row) {
+      console.log(row)
       const printList = [row]
       this.$store.commit('app/SET_PRINT_DATA_LIST', printList)
       this.$router.push({ path: "/preview", query: { id: this.templateId } })
@@ -288,7 +279,7 @@ export default {
           const workbook = XLSX.read(data, {
             type: 'binary'
           })
-          const wsname = workbook.SheetNames[1]
+          const wsname = workbook.SheetNames[0]
           const ws = XLSX.utils.sheet_to_json(workbook.Sheets[wsname])
           const dataList = []
           ws.forEach(item => {
@@ -352,7 +343,15 @@ export default {
             }
             dataList.push(templateData)
           })
-          this.tableData = dataList
+          this.tempList = dataList
+          const validateParame = dataList.some(item => {
+            return !item.A003
+          })
+          if (validateParame) {
+            this.tableData = dataList
+          } else {
+            this.tableData = dataList
+          }
         } catch (e) {
           this.$Message.error('解析失败!')
           return false

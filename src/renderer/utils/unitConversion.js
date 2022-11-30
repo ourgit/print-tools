@@ -39,9 +39,9 @@ export function mmToPx(value) {
 export function calcStyle(value, ratio, unit) {
   const rationNumber = ratio / 100
   if (ratio > 0) {
-    return value * rationNumber + unit
+    return (value * rationNumber).toFixed(2) + unit
   } else {
-    return value / Math.abs(rationNumber) + unit
+    return (value / Math.abs(rationNumber)).toFixed(2) + unit
   }
 }
 
