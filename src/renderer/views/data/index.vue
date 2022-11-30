@@ -395,7 +395,7 @@ export default {
           const workbook = XLSX.read(data, {
             type: "binary",
           });
-          const wsname = workbook.SheetNames[3];
+          const wsname = workbook.SheetNames[4];
           const ws = XLSX.utils.sheet_to_json(workbook.Sheets[wsname]);
           const dataList = [];
           ws.forEach((item) => {
@@ -438,7 +438,7 @@ export default {
                   item[templateData.A052Label.replace(/\s*/g, "")] || "";
                 templateData.TEMP =
                   item[templateData.A010Label.replace(/\s*/g, "")] || "";
-                templateData.A010 = formatExcelDate(templateData.TEMP);
+                templateData.A010 = this.formatExcelDate(templateData.TEMP);
 
                 templateData.A902 =
                   item[templateData.A902Label.replace(/\s*/g, "")] || "";
@@ -474,7 +474,7 @@ export default {
                   item[templateData.A051Label.replace(/\s*/g, "")] || "";
                 templateData.TEMP =
                   item[templateData.A010Label.replace(/\s*/g, "")] || "";
-                templateData.A010 = formatExcelDate(templateData.TEMP);
+                templateData.A010 = this.formatExcelDate(templateData.TEMP);
                 templateData.A002 =
                   item[templateData.A002Label.replace(/\s*/g, "")] || "";
                 break;
@@ -495,7 +495,7 @@ export default {
                   item[templateData.A002Label.replace(/\s*/g, "")] || "";
                 templateData.TEMP =
                   item[templateData.A010Label.replace(/\s*/g, "")] || "";
-                templateData.A010 = formatExcelDate(templateData.TEMP);
+                templateData.A010 = this.formatExcelDate(templateData.TEMP);
                 break;
             }
             dataList.push(templateData);
