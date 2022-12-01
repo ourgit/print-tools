@@ -69,10 +69,21 @@
       </div>
     </el-dialog>
     <el-dialog title="配置单件码生成规格" :visible.sync="dialogCodeVisible" width="500px" :close-on-click-modal="false" :destroy-on-close="false">
-
+      <el-form :model="codeForm" :rules="codeRules" ref="codeForm" label-width="150px">
+        <el-form-item label="发行机构代码标识">
+          <el-select v-model="codeForm.issueId" placeholder="请选择发行机构代码标识">
+            <el-option label="军委改革和编制办公室" value="1"></el-option>
+            <el-option label="国家统一社会信用代码管理机构" value="2"></el-option>
+            <el-option label="军队资产编目编码机构" value="2"></el-option>
+          </el-select>
+        </el-form-item>
+        <el-form-item label="组织机构代码" prop="orgId">
+          <el-input v-model="codeForm.orgId"></el-input>
+        </el-form-item>
+      </el-form>
       <div slot="footer" class="dialog-footer">
         <el-button @click="dialogCodeVisible = false">取 消</el-button>
-        <el-button type="primary" @click="handleImport">确 定</el-button>
+        <el-button type="primary" @click="generateCode('codeForm')">确 定</el-button>
       </div>
     </el-dialog>
   </div>
@@ -84,6 +95,7 @@ import Store from "electron-store";
 const store = new Store();
 import template from "@/template/index.json";
 import XLSX from "xlsx";
+import { generateSingleCode } from "@/utils/util";
 let localPath = ''
 if (process.env.NODE_ENV === 'development') {
   localPath = '/static';
@@ -112,7 +124,17 @@ export default {
       currentPage: 1,
       templateUrl: '',
       keywrods: '',
-      excelLabelList: []
+      excelLabelList: [],
+      codeForm: {
+        issueId: '1',
+        orgId: ''
+      },
+      codeRules: {
+        orgId: [
+          { required: true, message: '请输入组织机构代码', trigger: 'blur' },
+          { min: 9, max: 9, message: '组织机构代码必须为9位', trigger: 'blur' }
+        ],
+      }
     };
   },
   beforeRouteEnter(to, form, next) {
@@ -445,7 +467,7 @@ export default {
       let filterData = []
       const keyWord = this.keywrods.trim()
       if (keyWord) {
-        for (var i = 0;i < allData.length;i++) {
+        for (var i = 0; i < allData.length; i++) {
           const itemStr = JSON.stringify(allData[i])
           if (itemStr.split(keyWord).length > 1) {
             filterData.push(allData[i])
@@ -484,6 +506,7 @@ export default {
           });
           const wsname = workbook.SheetNames[0];
           excelData = XLSX.utils.sheet_to_json(workbook.Sheets[wsname]);
+          console.log(excelData)
           const excelLabelList = []
           for (let key in excelData[0]) {
             excelLabelList.push(key.replace(/\s*/g, ""))
@@ -504,7 +527,6 @@ export default {
               return item
             })
             this.dialogFormVisible = true
-            console.log(this.tableColumn)
           }
         } catch (e) {
           this.$Message.error("解析失败!");
@@ -514,6 +536,7 @@ export default {
       fileReader.readAsBinaryString(files[0]);
     },
     handleImport() {
+      this.dialogFormVisible = false
       tempDataList = [];
       excelData.forEach((excel) => {
         const templateData = JSON.parse(JSON.stringify(this.templateData));
@@ -526,6 +549,7 @@ export default {
         })
         tempDataList.push(templateData);
       });
+
       if (this.templateId === 2 || this.templateId === 3 || this.templateId === 5) {
         const isCodeNull = tempDataList.some(item => {
           return !item.A003
@@ -540,10 +564,44 @@ export default {
         this.tableData = tempDataList;
         this.filterData()
       }
+
     },
     //自动生成单件码
-    generateCode() {
-      console.log(tempDataList)
+    generateCode(formName) {
+      this.$refs[formName].validate((valid) => {
+        if (valid) {
+
+          console.log(tempDataList)
+          const dateTime = new Date(new Date().toLocaleDateString()).getTime()
+          const codeHistory = store.get('codeHistory') || []
+          const todayHistory = codeHistory.filter(item => {
+            return item.dateTime === dateTime
+          })
+          const historyIndex = todayHistory.findIndex(item => {
+            return item.dateTime === dateTime && item.issueId === this.codeForm.issueId && item.orgId === this.codeForm.orgId
+          })
+          // todayHistory.push({
+          //   dateTime,
+          //   issueId: this.codeForm.issueId,
+          //   orgId: this.codeForm.orgId,
+          //   lastSeq: 1
+          // })
+          let lastSeq = 0
+          if (historyIndex !== -1) {
+            lastSeq = todayHistory[historyIndex].lastSeq
+          }
+          const dateList = []
+          tempDataList.forEach((item, index) => {
+            console.log(index)
+            const itemSeq = this.$generateSerialNumber(lastSeq + (index + 1), 9)
+            item.A003 = generateSingleCode(this.codeForm.issueId, this.codeForm, itemSeq)
+          })
+          console.log(tempDataList)
+          this.dialogCodeVisible = false
+        } else {
+          return false;
+        }
+      });
     },
     submitForm() {
       let validate = true;

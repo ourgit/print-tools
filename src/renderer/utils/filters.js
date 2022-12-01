@@ -141,3 +141,12 @@ export function hasLetter(str) {
 export function roundFun(value, n) {
   return Math.round(value * Math.pow(10, n)) / Math.pow(10, n);
 }
+
+
+export function generateSerialNumber(num, length) {
+  num = num.toString();
+  while (length > num.length) {
+    num = '0' + num;
+  }
+  return num;
+}
