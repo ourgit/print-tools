@@ -6,11 +6,13 @@
       </router-link>
       <div class="title">当前标签模板：{{ templateData.name }}</div>
       <div class="btn" style="display: flex">
+        <el-input v-model="keywrods" size="small" clearable placeholder="请输入查询关键字"></el-input>
+        <el-button type="success" size="small" @click="filterData(1)" icon="el-icon-search" style="margin-left:10px">查询</el-button>
         <el-upload ref="upload" action="" style="margin: 0 10px" :on-change="importExcel" :auto-upload="false" :show-file-list="false">
           <el-button type="primary" size="small" icon="el-icon-upload2">导入</el-button>
         </el-upload>
         <el-button type="success" size="small" @click="dialogTableVisible = true" icon="el-icon-plus">新增</el-button>
-        <a :href="`/static/template/${templateId}.xlsx`" style="margin: 0 10px">
+        <a :href="templateUrl" style="margin: 0 10px">
           <el-button type="primary" size="small" icon="el-icon-download">下载模板</el-button>
         </a>
       </div>
@@ -32,12 +34,11 @@
           <el-button type="primary" @click="batchPrint">批量打印</el-button>
           <el-button @click="clearData">清空数据</el-button>
         </div>
-        <el-pagination @size-change="handleSizeChange" :page-sizes="[10, 50, 100, 200]" @current-change="changePage" :current-page.sync="currentPage" :page-size="size" layout="total,sizes, prev, pager, next" :total="total">
+        <el-pagination @size-change="handleSizeChange" :page-sizes="[10, 50, 100, 200]" @current-change="filterData" :current-page.sync="currentPage" :page-size="size" layout="total,sizes, prev, pager, next" :total="total">
         </el-pagination>
       </div>
     </div>
-    <!-- 弹出 -->
-    <el-dialog title="新增数据" :visible.sync="dialogTableVisible">
+    <el-dialog title="新增数据" :visible.sync="dialogTableVisible" width="500px" :close-on-click-modal="false" :destroy-on-close="false">
       <el-form :model="form" label-width="100px" label-position="right">
         <el-form-item v-for="(item, index) in tableColumn" :key="index" :label="item.label">
           <el-date-picker v-if="item.value === 'A010'" v-model="form[item.value]" format="yyyy年MM月dd日" value-format="yyyy年MM月dd日" type="date" placeholder="选择日期"></el-date-picker>
@@ -49,15 +50,48 @@
         <el-button type="primary" @click="submitForm">确 定</el-button>
       </div>
     </el-dialog>
+    <el-dialog title="请选择数据来源" :visible.sync="dialogFormVisible" width="500px" :close-on-click-modal="false" :destroy-on-close="false">
+      <el-table :data="tableColumn" style="width: 100%">
+        <el-table-column prop="label" label="模板标签">
+        </el-table-column>
+        <el-table-column prop="excelLabel" label="数据标签">
+          <template #default="{ row }">
+            <el-select v-model="row.excelLabel" placeholder="请选择数据来源">
+              <el-option v-for="item in excelLabelList" :key="item" :label="item" :value="item">
+              </el-option>
+            </el-select>
+          </template>
+        </el-table-column>
+      </el-table>
+      <div slot="footer" class="dialog-footer">
+        <el-button @click="dialogFormVisible = false">取 消</el-button>
+        <el-button type="primary" @click="handleImport">确 定</el-button>
+      </div>
+    </el-dialog>
+    <el-dialog title="配置单件码生成规格" :visible.sync="dialogCodeVisible" width="500px" :close-on-click-modal="false" :destroy-on-close="false">
+
+      <div slot="footer" class="dialog-footer">
+        <el-button @click="dialogCodeVisible = false">取 消</el-button>
+        <el-button type="primary" @click="handleImport">确 定</el-button>
+      </div>
+    </el-dialog>
   </div>
 </template>
 
 <script>
-import { shell } from "electron";
+import path from 'path'
 import Store from "electron-store";
 const store = new Store();
 import template from "@/template/index.json";
 import XLSX from "xlsx";
+let localPath = ''
+if (process.env.NODE_ENV === 'development') {
+  localPath = '/static';
+} else {
+  localPath = path.join(__static);
+}
+var excelData = []
+var tempDataList = []
 export default {
   data() {
     return {
@@ -70,12 +104,15 @@ export default {
       tableDataList: [],
       dialogTableVisible: false,
       dialogFormVisible: false,
+      dialogCodeVisible: false,
       selectedList: [],
-      gridData: [],
       form: {},
       size: 10,
       total: 0,
       currentPage: 1,
+      templateUrl: '',
+      keywrods: '',
+      excelLabelList: []
     };
   },
   beforeRouteEnter(to, form, next) {
@@ -119,192 +156,228 @@ export default {
       }
       const tableColumn = [];
       const templateData = this.templateData;
-
+      this.templateUrl = localPath + '/template/' + this.templateId + '.xlsx'
       switch (this.templateId) {
         case 1:
           tableColumn.push({
-            label: templateData.A002Label,
+            label: templateData.A002Label.replace(/\s*/g, ""),
             value: "A002",
+            excelLabel: templateData.A002Label.replace(/\s*/g, "")
           });
           break;
         case 2:
           tableColumn.push(
             {
-              label: templateData.A002Label,
+              label: templateData.A002Label.replace(/\s*/g, ""),
               value: "A002",
+              excelLabel: templateData.A002Label.replace(/\s*/g, ""),
             },
             {
-              label: templateData.A003Label,
+              label: templateData.A003Label.replace(/\s*/g, ""),
               value: "A003",
+              excelLabel: templateData.A003Label.replace(/\s*/g, ""),
             }
           );
           break;
         case 3:
           tableColumn.push(
             {
-              label: templateData.A002Label,
+              label: templateData.A002Label.replace(/\s*/g, ""),
               value: "A002",
+              excelLabel: templateData.A002Label.replace(/\s*/g, ""),
             },
             {
-              label: templateData.A003Label,
+              label: templateData.A003Label.replace(/\s*/g, ""),
               value: "A003",
+              excelLabel: templateData.A003Label.replace(/\s*/g, ""),
             }
           );
           break;
         case 4:
           tableColumn.push(
             {
-              label: templateData.A001Label,
+              label: templateData.A001Label.replace(/\s*/g, ""),
               value: "A001",
+              excelLabel: templateData.A001Label.replace(/\s*/g, ""),
             },
             {
-              label: templateData.A002Label,
+              label: templateData.A002Label.replace(/\s*/g, ""),
               value: "A002",
+              excelLabel: templateData.A002Label.replace(/\s*/g, ""),
             },
             {
-              label: templateData.A003Label,
+              label: templateData.A003Label.replace(/\s*/g, ""),
               value: "A003",
+              excelLabel: templateData.A003Label.replace(/\s*/g, ""),
             },
             {
-              label: templateData.deptLabel,
-              value: "dept",
+              label: templateData.deptLabel.replace(/\s*/g, ""),
+              value: "A002",
+              excelLabel: templateData.deptLabel.replace(/\s*/g, ""),
             }
           );
           break;
         case 5:
           tableColumn.push(
             {
-              label: templateData.A001Label,
+              label: templateData.A001Label.replace(/\s*/g, ""),
               value: "A001",
+              excelLabel: templateData.A001Label.replace(/\s*/g, ""),
             },
             {
-              label: templateData.A005Label,
+              label: templateData.A005Label.replace(/\s*/g, ""),
               value: "A005",
+              excelLabel: templateData.A005Label.replace(/\s*/g, ""),
             },
             {
-              label: templateData.A006Label,
+              label: templateData.A006Label.replace(/\s*/g, ""),
               value: "A006",
+              excelLabel: templateData.A006Label.replace(/\s*/g, ""),
             },
             {
-              label: templateData.A052Label,
+              label: templateData.A052Label.replace(/\s*/g, ""),
               value: "A052",
+              excelLabel: templateData.A052Label.replace(/\s*/g, ""),
             },
             {
-              label: templateData.A010Label,
+              label: templateData.A010Label.replace(/\s*/g, ""),
               value: "A010",
+              excelLabel: templateData.A010Label.replace(/\s*/g, ""),
             },
             {
-              label: templateData.A902Label,
+              label: templateData.A902Label.replace(/\s*/g, ""),
               value: "A902",
+              excelLabel: templateData.A902Label.replace(/\s*/g, ""),
             },
             {
-              label: templateData.A002Label,
+              label: templateData.A002Label.replace(/\s*/g, ""),
               value: "A002",
+              excelLabel: templateData.A002Label.replace(/\s*/g, ""),
             },
             {
-              label: templateData.A003Label,
+              label: templateData.A003Label.replace(/\s*/g, ""),
               value: "A003",
+              excelLabel: templateData.A003Label.replace(/\s*/g, ""),
             }
           );
           break;
         case 6:
           tableColumn.push(
             {
-              label: templateData.A002Label,
+              label: templateData.A002Label.replace(/\s*/g, ""),
               value: "A002",
+              excelLabel: templateData.A002Label.replace(/\s*/g, ""),
             },
             {
-              label: templateData.A007Label,
+              label: templateData.A007Label.replace(/\s*/g, ""),
               value: "A007",
+              excelLabel: templateData.A007Label.replace(/\s*/g, ""),
             }
           );
           break;
         case 7:
           tableColumn.push(
             {
-              label: templateData.A002Label,
+              label: templateData.A002Label.replace(/\s*/g, ""),
               value: "A002",
+              excelLabel: templateData.A002Label.replace(/\s*/g, ""),
             },
             {
-              label: templateData.A003Label,
+              label: templateData.A003Label.replace(/\s*/g, ""),
               value: "A003",
+              excelLabel: templateData.A003Label.replace(/\s*/g, ""),
             },
             {
-              label: templateData.A007Label,
+              label: templateData.A007Label.replace(/\s*/g, ""),
               value: "A007",
+              excelLabel: templateData.A007Label.replace(/\s*/g, ""),
             }
           );
           break;
         case 8:
           tableColumn.push(
             {
-              label: templateData.A001Label,
+              label: templateData.A001Label.replace(/\s*/g, ""),
               value: "A001",
+              excelLabel: templateData.A001Label.replace(/\s*/g, ""),
             },
             {
-              label: templateData.A005Label,
+              label: templateData.A005Label.replace(/\s*/g, ""),
               value: "A005",
+              excelLabel: templateData.A005Label.replace(/\s*/g, ""),
             },
             {
-              label: templateData.A006Label,
+              label: templateData.A006Label.replace(/\s*/g, ""),
               value: "A006",
+              excelLabel: templateData.A006Label.replace(/\s*/g, ""),
             },
             {
-              label: templateData.A902Label,
+              label: templateData.A902Label.replace(/\s*/g, ""),
               value: "A902",
+              excelLabel: templateData.A902Label.replace(/\s*/g, ""),
             },
             {
-              label: templateData.A051Label,
+              label: templateData.A051Label.replace(/\s*/g, ""),
               value: "A051",
+              excelLabel: templateData.A051Label.replace(/\s*/g, ""),
             },
             {
-              label: templateData.A010Label,
+              label: templateData.A010Label.replace(/\s*/g, ""),
               value: "A010",
+              excelLabel: templateData.A010Label.replace(/\s*/g, ""),
             },
             {
-              label: templateData.A002Label,
+              label: templateData.A002Label.replace(/\s*/g, ""),
               value: "A002",
+              excelLabel: templateData.A002Label.replace(/\s*/g, ""),
             }
           );
           break;
         case 9:
           tableColumn.push(
             {
-              label: templateData.A001Label,
+              label: templateData.A001Label.replace(/\s*/g, ""),
               value: "A001",
+              excelLabel: templateData.A001Label.replace(/\s*/g, ""),
             },
             {
-              label: templateData.A005Label,
+              label: templateData.A005Label.replace(/\s*/g, ""),
               value: "A005",
+              excelLabel: templateData.A005Label.replace(/\s*/g, ""),
             },
             {
-              label: templateData.A006Label,
+              label: templateData.A006Label.replace(/\s*/g, ""),
               value: "A006",
+              excelLabel: templateData.A006Label.replace(/\s*/g, ""),
             },
             {
-              label: templateData.A007Label,
+              label: templateData.A007Label.replace(/\s*/g, ""),
               value: "A007",
+              excelLabel: templateData.A007Label.replace(/\s*/g, ""),
             },
             {
-              label: templateData.A902Label,
+              label: templateData.A902Label.replace(/\s*/g, ""),
               value: "A902",
+              excelLabel: templateData.A902Label.replace(/\s*/g, ""),
             },
             {
-              label: templateData.A051Label,
+              label: templateData.A051Label.replace(/\s*/g, ""),
               value: "A051",
+              excelLabel: templateData.A051Label.replace(/\s*/g, ""),
             },
             {
-              label: templateData.A002Label,
+              label: templateData.A002Label.replace(/\s*/g, ""),
               value: "A002",
+              excelLabel: templateData.A002Label.replace(/\s*/g, ""),
             },
             {
-              label: templateData.A010Label,
+              label: templateData.A010Label.replace(/\s*/g, ""),
               value: "A010",
+              excelLabel: templateData.A010Label.replace(/\s*/g, ""),
             }
           );
           break;
       }
-
       this.tableColumn = tableColumn;
       this.forminit()
     },
@@ -323,18 +396,20 @@ export default {
       }
     },
     printRow(row) {
-      console.log(row);
       const printList = [row];
       this.$store.commit("app/SET_PRINT_DATA_LIST", printList);
       this.$router.push({ path: "/preview", query: { id: this.templateId } });
     },
     delRow(index) {
-      this.tableDataList.splice(index, 1);
+      const dataIndex = (this.currentPage - 1) * this.size + index
+      this.tableData.splice(dataIndex, 1);
+      this.filterData()
     },
     clearData() {
       this.tableData = [];
+      this.tableDataList = []
     },
-    formatExcelDate(numb) {
+    formatExcelDate(numb, format = "-") {
       if (!numb) {
         return "";
       }
@@ -343,27 +418,56 @@ export default {
       );
       const year = time.getFullYear() + "";
       const month = time.getMonth() + 1 + "";
-      const date = time.getDate()+"";
+      const date = time.getDate();
+      if (format && format.length === 1) {
         return (
           year +
-          "年" +
+          format +
           (month < 10 ? "0" + month : month) +
-          "月" +
-          (date < 10 ? "0" + date : date)+"日"
+          format +
+          (date < 10 ? "0" + date : date)
         );
+      }
+      return (
+        year +
+        (month < 10 ? "0" + month : month) +
+        (date < 10 ? "0" + date : date)
+      );
     },
     handleSizeChange(val) {
       this.size = val
       this.currentPage = 1
-      this.changePage()
+      this.filterData()
     },
-    changePage() {
+    filterData(page) {
       this.tableDataList = []
-      this.tableData.forEach((res, index) => {
-        if (index < this.currentPage * this.size && index >= (this.currentPage - 1) * this.size) {
-          this.tableDataList.push(res)
+      const allData = JSON.parse(JSON.stringify(this.tableData))
+      let filterData = []
+      const keyWord = this.keywrods.trim()
+      if (keyWord) {
+        for (var i = 0;i < allData.length;i++) {
+          const itemStr = JSON.stringify(allData[i])
+          if (itemStr.split(keyWord).length > 1) {
+            filterData.push(allData[i])
+          }
         }
-      })
+      } else {
+        filterData = this.tableData
+      }
+      if (page) {
+        filterData.forEach((res, index) => {
+          if (index < page * this.size && index >= (page - 1) * this.size) {
+            this.tableDataList.push(res)
+          }
+        })
+      } else {
+        filterData.forEach((res, index) => {
+          if (index < this.currentPage * this.size && index >= (this.currentPage - 1) * this.size) {
+            this.tableDataList.push(res)
+          }
+        })
+      }
+      this.total = filterData.length
     },
     importExcel(file) {
       const files = { 0: file.raw };
@@ -379,105 +483,67 @@ export default {
             type: "binary",
           });
           const wsname = workbook.SheetNames[0];
-          const ws = XLSX.utils.sheet_to_json(workbook.Sheets[wsname]);
-          const dataList = [];
-          ws.forEach((item) => {
-            const templateData = JSON.parse(JSON.stringify(this.templateData));
-            switch (this.templateId) {
-              case 1:
-                templateData.A002 =
-                  item[templateData.A002Label.replace(/\s*/g, "")] || "";
-                break;
-              case 2:
-                templateData.A002 =
-                  item[templateData.A002Label.replace(/\s*/g, "")] || "";
-                templateData.A003 =
-                  item[templateData.A003Label.replace(/\s*/g, "")] || "";
-                break;
-              case 3:
-                templateData.A002 =
-                  item[templateData.A002Label.replace(/\s*/g, "")] || "";
-                templateData.A003 =
-                  item[templateData.A003Label.replace(/\s*/g, "")] || "";
-                break;
-              case 4:
-                templateData.A001 =
-                  item[templateData.A001Label.replace(/\s*/g, "")] || "";
-                templateData.A002 =
-                  item[templateData.A002Label.replace(/\s*/g, "")] || "";
-                templateData.A003 =
-                  item[templateData.A003Label.replace(/\s*/g, "")] || "";
-                templateData.dept =
-                  item[templateData.deptLabel.replace(/\s*/g, "")] || "";
-                break;
-              case 5:
-                templateData.A001 =
-                  item[templateData.A001Label.replace(/\s*/g, "")] || "";
-                templateData.A005 =
-                  item[templateData.A005Label.replace(/\s*/g, "")] || "";
-                templateData.A006 =
-                  item[templateData.A006Label.replace(/\s*/g, "")] || "";
-                templateData.A052 =
-                  item[templateData.A052Label.replace(/\s*/g, "")] || "";
-                templateData.A010 = this.formatExcelDate(item[templateData.A010Label.replace(/\s*/g, "")] || "");
-
-                templateData.A902 =
-                  item[templateData.A902Label.replace(/\s*/g, "")] || "";
-                templateData.A002 =
-                  item[templateData.A002Label.replace(/\s*/g, "")] || "";
-                templateData.A003 =
-                  item[templateData.A003Label.replace(/\s*/g, "")] || "";
-                break;
-              case 6:
-                templateData.A002 =
-                  item[templateData.A002Label.replace(/\s*/g, "")] || "";
-                templateData.A007 =
-                  item[templateData.A007Label.replace(/\s*/g, "")] || "";
-                break;
-              case 7:
-                templateData.A002 =
-                  item[templateData.A002Label.replace(/\s*/g, "")] || "";
-                templateData.A003 =
-                  item[templateData.A003Label.replace(/\s*/g, "")] || "";
-                templateData.A007 =
-                  item[templateData.A007Label.replace(/\s*/g, "")] || "";
-                break;
-              case 8:
-                templateData.A001 = item[templateData.A001Label.replace(/\s*/g, "")] || "";
-                templateData.A005 = item[templateData.A005Label.replace(/\s*/g, "")] || "";
-                templateData.A006 = item[templateData.A006Label.replace(/\s*/g, "")] || "";
-                templateData.A902 = item[templateData.A902Label.replace(/\s*/g, "")] || "";
-                templateData.A051 = item[templateData.A051Label.replace(/\s*/g, "")] || "";
-                templateData.A010 = this.formatExcelDate(item[templateData.A010Label.replace(/\s*/g, "")] || "");
-                templateData.A002 =
-                  item[templateData.A002Label.replace(/\s*/g, "")] || "";
-                break;
-              case 9:
-                templateData.A001 = item[templateData.A001Label.replace(/\s*/g, "")] || "";
-                templateData.A005 = item[templateData.A005Label.replace(/\s*/g, "")] || "";
-                templateData.A006 = item[templateData.A006Label.replace(/\s*/g, "")] || "";
-                templateData.A007 = item[templateData.A007Label.replace(/\s*/g, "")] || "";
-                templateData.A902 = item[templateData.A902Label.replace(/\s*/g, "")] || "";
-                templateData.A051 = item[templateData.A051Label.replace(/\s*/g, "")] || "";
-                templateData.A002 = item[templateData.A002Label.replace(/\s*/g, "")] || "";
-                templateData.A010 = this.formatExcelDate(item[templateData.A010Label.replace(/\s*/g, "")] || "");
-                break;
-            }
-            dataList.push(templateData);
-          });
-          this.tableData = dataList;
-          dataList.forEach((res, index) => {
-            if (index < this.currentPage * this.size && index >= (this.currentPage - 1) * this.size) {
-              this.tableDataList.push(res)
-            }
-          })
-          this.total = dataList.length
+          excelData = XLSX.utils.sheet_to_json(workbook.Sheets[wsname]);
+          const excelLabelList = []
+          for (let key in excelData[0]) {
+            excelLabelList.push(key.replace(/\s*/g, ""))
+          }
+          this.excelLabelList = excelLabelList
+          const tabelLabelList = this.tableColumn.map(item => item.label)
+          const isInclude = tabelLabelList.every((val) => this.excelLabelList.includes(val))
+          if (isInclude) {
+            this.handleImport()
+          } else {
+            this.tableColumn.map(item => {
+              const keyIndex = excelLabelList.findIndex(label => {
+                return label === item.label
+              })
+              if (keyIndex === -1) {
+                item.excelLabel = ''
+              }
+              return item
+            })
+            this.dialogFormVisible = true
+            console.log(this.tableColumn)
+          }
         } catch (e) {
           this.$Message.error("解析失败!");
           return false;
         }
       };
       fileReader.readAsBinaryString(files[0]);
+    },
+    handleImport() {
+      tempDataList = [];
+      excelData.forEach((excel) => {
+        const templateData = JSON.parse(JSON.stringify(this.templateData));
+        this.tableColumn.forEach(item => {
+          if (item.excelLabel) {
+            templateData[item.value] = excel[item.excelLabel] || "";
+          } else {
+            templateData[item.value] = ''
+          }
+        })
+        tempDataList.push(templateData);
+      });
+      if (this.templateId === 2 || this.templateId === 3 || this.templateId === 5) {
+        const isCodeNull = tempDataList.some(item => {
+          return !item.A003
+        })
+        if (isCodeNull) {
+          this.dialogCodeVisible = true
+        } else {
+          this.tableData = tempDataList;
+          this.filterData()
+        }
+      } else {
+        this.tableData = tempDataList;
+        this.filterData()
+      }
+    },
+    //自动生成单件码
+    generateCode() {
+      console.log(tempDataList)
     },
     submitForm() {
       let validate = true;
@@ -491,9 +557,12 @@ export default {
         const formList = JSON.parse(JSON.stringify(this.form))
         this.tableData.unshift(formList);
         this.forminit()
-        this.changePage()
+        this.filterData()
       } else {
-        this.$message('内容不为空');
+        this.$message({
+          message: '内容不为空',
+          type: 'warning'
+        });
       }
     },
     forminit() {
