@@ -334,7 +334,7 @@ export default {
     clearData() {
       this.tableData = [];
     },
-    formatExcelDate(numb, format = "-") {
+    formatExcelDate(numb) {
       if (!numb) {
         return "";
       }
@@ -343,21 +343,14 @@ export default {
       );
       const year = time.getFullYear() + "";
       const month = time.getMonth() + 1 + "";
-      const date = time.getDate();
-      if (format && format.length === 1) {
+      const date = time.getDate()+"";
         return (
           year +
-          format +
+          "年" +
           (month < 10 ? "0" + month : month) +
-          format +
-          (date < 10 ? "0" + date : date)
+          "月" +
+          (date < 10 ? "0" + date : date)+"日"
         );
-      }
-      return (
-        year +
-        (month < 10 ? "0" + month : month) +
-        (date < 10 ? "0" + date : date)
-      );
     },
     handleSizeChange(val) {
       this.size = val
