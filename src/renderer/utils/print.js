@@ -25,12 +25,12 @@ Print.prototype = {
   },
   getStyle: function () {
     var str = '',
-      styles = document.querySelectorAll('style,link')
+      styles = document.querySelectorAll('style')
     for (var i = 0; i < styles.length; i++) {
       str += styles[i].outerHTML
     }
     str +=
-      '<style>html,body,div{height: auto!important;margin:0;padding:0}@page{size:' +
+      '<style>html,body,div{margin:0;padding:0}@page{size:' +
       this.pageWidth +
       ' ' +
       this.pageHeight +

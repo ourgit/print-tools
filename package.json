@@ -79,8 +79,6 @@
     "fs-extra": "^10.1.0",
     "jsbarcode": "^3.11.5",
     "qrcode": "^1.5.1",
-    "qrcodejs2": "^0.0.2",
-    "uqrcodejs": "^4.0.0",
     "uuid": "^9.0.0",
     "xlsx": "0.16.0"
   },
