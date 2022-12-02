@@ -135,7 +135,7 @@
   {
     "id": 8,
     "name": "多个单品种标签",
-    "pageWidth": 10,
+    "pageWidth": 100,
     "pageHeight": 50,
     "ratio": 1,
     "A002Label": "品种码",
@@ -170,7 +170,7 @@
   {
     "id": 9,
     "name": "多个单品种零部件标签",
-    "pageWidth": 10,
+    "pageWidth": 100,
     "pageHeight": 50,
     "ratio": 1,
     "A002Label": "品种码",

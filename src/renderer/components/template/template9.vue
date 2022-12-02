@@ -1,6 +1,6 @@
 <template>
   <div :class="['tempate-box', {isEdit}]" style="box-sizing: border-box;overflow: hidden;" :style="{'width':$calcStyle(100,templateData.ratio,'mm'),'height':$calcStyle(50,templateData.ratio,'mm'),'padding':$calcStyle(2,templateData.ratio,'mm')}">
-    <div style="display: flex;border: 1px solid #000;" :style="{'height':$calcStyle(45,templateData.ratio,'mm')}">
+    <div style="display: flex;border: 1px solid #000;overflow: hidden;" :style="{'height':$calcStyle(45,templateData.ratio,'mm')}">
       <div style="border-right: 1px solid #000;" :style="{'width':$calcStyle(40,templateData.ratio,'mm')}">
         <div style="border-bottom: 1px solid #000;display: flex;justify-content: center;align-items: center;" :style="{'height':$calcStyle(36,templateData.ratio,'mm')}">
           <img :src="qrCodeUrl" :style="{'width':$calcStyle(34,templateData.ratio,'mm'),'height':$calcStyle(34,templateData.ratio,'mm')}">
@@ -18,17 +18,17 @@
         </div>
         <div style="display: flex;border-bottom: 1px solid #000;" :style="{'height':$calcStyle(9,templateData.ratio,'mm')}">
           <div style="flex: 1; display: flex;" :style="{'height':$calcStyle(9,templateData.ratio,'mm'),'fontSize':$calcStyle(7,templateData.ratio,'pt')}" @click="updateItem('A006')">
-            <div style="display: flex;justify-content: center;align-items: center;border-right: 1px solid #000;padding: 0 0.5mm;" :style="{'width':$calcStyle(10,templateData.ratio,'mm'),'height':$calcStyle(9,templateData.ratio,'mm')}">{{ templateData.showA006 ? templateData.A006Label : ''}}</div>
+            <div style="display: flex;justify-content: center;align-items: center;border-right: 1px solid #000;" :style="{'width':$calcStyle(10,templateData.ratio,'mm'),'height':$calcStyle(9,templateData.ratio,'mm'),'paddingLeft': $calcStyle(2,templateData.ratio,'mm'),'paddingRight': $calcStyle(2,templateData.ratio,'mm')}">{{ templateData.showA006 ? templateData.A006Label : ''}}</div>
             <div style="flex: 1;display: flex;justify-content: center;align-items: center;border-right: 1px solid #000;" :style="{'height':$calcStyle(9,templateData.ratio,'mm')}">{{ templateData.showA006? templateData.A006 : ''}}</div>
           </div>
           <div style="flex: 1; display: flex;" :style="{'height':$calcStyle(9,templateData.ratio,'mm'),'fontSize':$calcStyle(7,templateData.ratio,'pt')}" @click="updateItem('A007')">
-            <div style="display: flex;justify-content: center;align-items: center;border-right: 1px solid #000;padding: 0 0.5mm;" :style="{'width':$calcStyle(10,templateData.ratio,'mm'),'height':$calcStyle(9,templateData.ratio,'mm')}">{{ templateData.showA007 ? templateData.A007Label : ''}}</div>
+            <div style="display: flex;justify-content: center;align-items: center;border-right: 1px solid #000;" :style="{'width':$calcStyle(10,templateData.ratio,'mm'),'height':$calcStyle(9,templateData.ratio,'mm'),'paddingLeft': $calcStyle(2,templateData.ratio,'mm'),'paddingRight': $calcStyle(2,templateData.ratio,'mm')}">{{ templateData.showA007 ? templateData.A007Label : ''}}</div>
             <div style="flex: 1;display: flex;justify-content: center;align-items: center;" :style="{'height':$calcStyle(9,templateData.ratio,'mm')}">{{ templateData.showA007 ? templateData.A007 : ''}}</div>
           </div>
         </div>
         <div style="display: flex;border-bottom: 1px solid #000;" :style="{'height':$calcStyle(9,templateData.ratio,'mm')}">
           <div style="flex: 1; display: flex;" :style="{'height':$calcStyle(9,templateData.ratio,'mm'),'fontSize':$calcStyle(7,templateData.ratio,'pt')}" @click="updateItem('A902')">
-            <div style="display: flex;justify-content: center;align-items: center;border-right: 1px solid #000;padding: 0 0.5mm;" :style="{'width':$calcStyle(10,templateData.ratio,'mm'),'height':$calcStyle(9,templateData.ratio,'mm')}">{{ templateData.showA902 ? templateData.A902Label : ''}}</div>
+            <div style="display: flex;justify-content: center;align-items: center;border-right: 1px solid #000;" :style="{'width':$calcStyle(10,templateData.ratio,'mm'),'height':$calcStyle(9,templateData.ratio,'mm'),'paddingLeft': $calcStyle(2,templateData.ratio,'mm'),'paddingRight': $calcStyle(2,templateData.ratio,'mm')}">{{ templateData.showA902 ? templateData.A902Label : ''}}</div>
             <div style="flex: 1;display: flex;justify-content: center;align-items: center;border-right: 1px solid #000;" :style="{'height':$calcStyle(9,templateData.ratio,'mm')}">{{ templateData.showA902 ? templateData.A902 : ''}}</div>
           </div>
           <div style="flex: 1; display: flex;" :style="{'height':$calcStyle(9,templateData.ratio,'mm'),'fontSize':$calcStyle(7,templateData.ratio,'pt')}" @click="updateItem('A051')">
@@ -37,7 +37,7 @@
           </div>
         </div>
         <div style="display: flex;width: 100%;align-items: center;" :style="{'height':$calcStyle(9,templateData.ratio,'mm'),'fontSize':$calcStyle(7,templateData.ratio,'pt')}" @click="updateItem('A010')">
-          <div style="display: flex;justify-content: center;align-items: center;border-right: 1px solid #000;padding: 0 0.5mm;" :style="{'width':$calcStyle(10,templateData.ratio,'mm'),'height':$calcStyle(9,templateData.ratio,'mm')}">{{ templateData.showA010 ? templateData.A010Label : ''}}</div>
+          <div style="display: flex;justify-content: center;align-items: center;border-right: 1px solid #000;" :style="{'width':$calcStyle(10,templateData.ratio,'mm'),'height':$calcStyle(9,templateData.ratio,'mm'),'paddingLeft': $calcStyle(2,templateData.ratio,'mm'),'paddingRight': $calcStyle(2,templateData.ratio,'mm')}">{{ templateData.showA010 ? templateData.A010Label : ''}}</div>
           <div style="flex: 1;display: flex;justify-content: center;align-items: center;" :style="{'height':$calcStyle(9,templateData.ratio,'mm')}">{{ templateData.showA010 ? templateData.A010 : ''}}</div>
         </div>
       </div>
