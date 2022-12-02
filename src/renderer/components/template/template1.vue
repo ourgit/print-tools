@@ -1,7 +1,7 @@
 <template>
-  <div :class="['tempate-box', {isEdit}]" :style="{'width':$calcStyle(40,templateData.ratio,'mm'),'height':$calcStyle(15,templateData.ratio,'mm'),'paddingTop':$calcStyle(2.5,templateData.ratio,'mm')}">
+  <div :class="['tempate-box', {isEdit}]" style="display: flex;flex-direction: column;align-items: center;overflow: hidden;" :style="{'width':$calcStyle(40,templateData.ratio,'mm'),'height':$calcStyle(15,templateData.ratio,'mm'),'paddingTop':$calcStyle(2.5,templateData.ratio,'mm')}">
     <canvas id="barCode" :style="{'width':$calcStyle(30,templateData.ratio,'mm'),'height':$calcStyle(10,templateData.ratio,'mm')}"></canvas>
-    <div class="text" :style="{'height':$calcStyle(2.5,templateData.ratio,'mm'),'fontSize':$calcStyle(6,templateData.ratio,'pt')}" @click="updateItem('A002')">
+    <div style="font-family: SimHei;" :style="{'height':$calcStyle(2.5,templateData.ratio,'mm'),'fontSize':$calcStyle(6,templateData.ratio,'pt')}" @click="updateItem('A002')">
       {{ templateData.showA002 ? templateData.A002 : ''}}
     </div>
   </div>
@@ -59,20 +59,8 @@ export default {
 
 <style lang="scss" scoped>
 .tempate-box {
-  width: 40mm;
-  height: 15mm;
-  padding-top: 2.5mm;
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  overflow: hidden;
   &.isEdit {
     border: 1px solid #000;
-  }
-  .text {
-    height: 2.5mm;
-    font-size: 6pt;
-    font-family: SimHei;
   }
 }
 </style>

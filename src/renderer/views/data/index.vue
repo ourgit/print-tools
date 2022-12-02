@@ -234,7 +234,7 @@ export default {
             },
             {
               label: templateData.deptLabel.replace(/\s*/g, ""),
-              value: "A002",
+              value: "dept",
               excelLabel: templateData.deptLabel.replace(/\s*/g, ""),
             }
           );
@@ -467,7 +467,7 @@ export default {
       let filterData = []
       const keyWord = this.keywrods.trim()
       if (keyWord) {
-        for (var i = 0; i < allData.length; i++) {
+        for (var i = 0;i < allData.length;i++) {
           const itemStr = JSON.stringify(allData[i])
           if (itemStr.split(keyWord).length > 1) {
             filterData.push(allData[i])
@@ -580,23 +580,30 @@ export default {
           const historyIndex = todayHistory.findIndex(item => {
             return item.dateTime === dateTime && item.issueId === this.codeForm.issueId && item.orgId === this.codeForm.orgId
           })
-          // todayHistory.push({
-          //   dateTime,
-          //   issueId: this.codeForm.issueId,
-          //   orgId: this.codeForm.orgId,
-          //   lastSeq: 1
-          // })
           let lastSeq = 0
           if (historyIndex !== -1) {
             lastSeq = todayHistory[historyIndex].lastSeq
           }
           const dateList = []
+          let seq = 0
           tempDataList.forEach((item, index) => {
-            console.log(index)
-            const itemSeq = this.$generateSerialNumber(lastSeq + (index + 1), 9)
-            item.A003 = generateSingleCode(this.codeForm.issueId, this.codeForm, itemSeq)
+            seq = lastSeq + (index + 1)
+            const itemSeq = this.$generateSerialNumber(seq, 9)
+            item.A003 = generateSingleCode(this.codeForm.issueId, this.codeForm.orgId, itemSeq)
           })
-          console.log(tempDataList)
+          if (historyIndex === -1) {
+            todayHistory.push({
+              dateTime,
+              issueId: this.codeForm.issueId,
+              orgId: this.codeForm.orgId,
+              lastSeq: seq
+            })
+          } else {
+            todayHistory[historyIndex].lastSeq = seq
+          }
+          store.set('codeHistory', todayHistory)
+          this.tableData = tempDataList;
+          this.filterData()
           this.dialogCodeVisible = false
         } else {
           return false;

@@ -1,9 +1,9 @@
 <template>
-  <div :class="['tempate-box', {isEdit}]" :style="{'width':$calcStyle(50,templateData.ratio,'mm'),'height':$calcStyle(50,templateData.ratio,'mm'),'paddingTop':$calcStyle(6,templateData.ratio,'mm')}">
+  <div :class="['tempate-box', {isEdit}]" style="display: flex;flex-direction: column;align-items: center;overflow: hidden;" :style="{'width':$calcStyle(50,templateData.ratio,'mm'),'height':$calcStyle(50,templateData.ratio,'mm'),'paddingTop':$calcStyle(6,templateData.ratio,'mm')}">
     <img :src="qrCodeUrl" :style="{'width':$calcStyle(34,templateData.ratio,'mm'),'height':$calcStyle(34,templateData.ratio,'mm')}">
-    <div class="text" :style="{'fontSize':$calcStyle(7,templateData.ratio,'pt')}">
-      <div class="text-item" :style="{'paddingTop':$calcStyle(1,templateData.ratio,'mm')}" @click="updateItem('A003')">{{ templateData.showA003 ? templateData.A003 : ''}}</div>
-      <div class="text-item" :style="{'paddingTop':$calcStyle(1,templateData.ratio,'mm')}" @click="updateItem('A007')">{{ templateData.showA007 ? templateData.A007Label + ':' + templateData.A007 : ''}}</div>
+    <div style="font-family: SimHei;display: flex;flex-direction: column;align-items: center;" :style="{'fontSize':$calcStyle(7,templateData.ratio,'pt')}">
+      <div :style="{'paddingTop':$calcStyle(1,templateData.ratio,'mm')}" @click="updateItem('A003')">{{ templateData.showA003 ? templateData.A003 : ''}}</div>
+      <div :style="{'paddingTop':$calcStyle(1,templateData.ratio,'mm')}" @click="updateItem('A007')">{{ templateData.showA007 ? templateData.A007Label + ':' + templateData.A007 : ''}}</div>
     </div>
   </div>
 </template>
@@ -64,25 +64,8 @@ export default {
 
 <style lang="scss" scoped>
 .tempate-box {
-  width: 50mm;
-  height: 50mm;
-  padding-top: 6mm;
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  overflow: hidden;
   &.isEdit {
     border: 1px solid #000;
-  }
-  .text {
-    font-size: 7pt;
-    font-family: SimHei;
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    .text-item {
-      padding-top: 1mm;
-    }
   }
 }
 </style>

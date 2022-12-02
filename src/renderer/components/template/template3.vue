@@ -1,5 +1,5 @@
 <template>
-  <div :class="['tempate-box', {isEdit}]" :style="{'width':$calcStyle(15,templateData.ratio,'mm'),'height':$calcStyle(15,templateData.ratio,'mm')}">
+  <div :class="['tempate-box', {isEdit}]" style="display: flex;flex-direction: column;justify-content: center;align-items: center;overflow: hidden;" :style="{'width':$calcStyle(15,templateData.ratio,'mm'),'height':$calcStyle(15,templateData.ratio,'mm')}">
     <img :src="qrCodeUrl" :style="{'width':$calcStyle(10,templateData.ratio,'mm'),'height':$calcStyle(10,templateData.ratio,'mm')}">
   </div>
 </template>
@@ -57,13 +57,6 @@ export default {
 
 <style lang="scss" scoped>
 .tempate-box {
-  width: 15mm;
-  height: 15mm;
-  display: flex;
-  flex-direction: column;
-  justify-content: center;
-  align-items: center;
-  overflow: hidden;
   &.isEdit {
     border: 1px solid #000;
   }

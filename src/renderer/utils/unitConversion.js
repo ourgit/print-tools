@@ -1,3 +1,5 @@
+import BigNumber from 'bignumber.js'
+
 // 取屏幕信息用作当前屏幕计算基本参数
 export function getDPI() {
   var arrDPI = new Array()
@@ -37,12 +39,7 @@ export function mmToPx(value) {
  * @param {String} unit 单位。
  */
 export function calcStyle(value, ratio, unit) {
-  const rationNumber = ratio / 100
-  if (ratio > 0) {
-    return (value * rationNumber).toFixed(2) + unit
-  } else {
-    return (value / Math.abs(rationNumber)).toFixed(2) + unit
-  }
+  return new BigNumber(value).dividedBy(new BigNumber(ratio)).toFixed(2) + unit
 }
 
 /**
@@ -51,10 +48,5 @@ export function calcStyle(value, ratio, unit) {
  * @param {Number} ratio 正负比例值。
  */
 export function calcRatio(value, ratio) {
-  const rationNumber = ratio / 100
-  if (ratio > 0) {
-    return value * rationNumber
-  } else {
-    return value / Math.abs(rationNumber)
-  }
+  return new BigNumber(value).dividedBy(new BigNumber(ratio)).toFixed(2)
 }

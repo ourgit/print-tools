@@ -31,7 +31,7 @@
       </div>
     </div>
     <div class="btn">
-      <el-button type="primary" @click="print">打印</el-button>
+      <el-button type="primary" @click="handlePrint">打印</el-button>
     </div>
   </div>
 </template>
@@ -80,16 +80,17 @@ export default {
             deviceName: this.selectedPrinterName, //打印机名称
           })
           .then((res) => {
-            this.printIndex++
-            if (this.printIndex < this.printDataList.length) {
-              this.printTest()
-            } else {
-              this.printIndex = 0
-            }
+
           })
           .catch((err) => {
           })
           .finally(() => {
+            this.printIndex++
+            if (this.printIndex < this.printDataList.length) {
+              setTimeout(this.handlePrint, 500)
+            } else {
+              this.printIndex = 0
+            }
           });
       }
     });
@@ -114,7 +115,7 @@ export default {
         this.printerList = list
       })
     },
-    print() {
+    handlePrint() {
       if (!this.selectedPrinterName) {
         return this.$message({
           message: "请先选择打印机",

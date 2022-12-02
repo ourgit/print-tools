@@ -1,7 +1,7 @@
 <template>
-  <div :class="['tempate-box', {isEdit}]" :style="{'width':$calcStyle(50,templateData.ratio,'mm'),'height':$calcStyle(50,templateData.ratio,'mm'),'paddingTop':$calcStyle(8,templateData.ratio,'mm')}">
+  <div :class="['tempate-box', {isEdit}]" style="display: flex;flex-direction: column;align-items: center;overflow: hidden;" :style="{'width':$calcStyle(50,templateData.ratio,'mm'),'height':$calcStyle(50,templateData.ratio,'mm'),'paddingTop':$calcStyle(8,templateData.ratio,'mm')}">
     <img :src="qrCodeUrl" :style="{'width':$calcStyle(34,templateData.ratio,'mm'),'height':$calcStyle(34,templateData.ratio,'mm')}">
-    <div class="text" :style="{'height':$calcStyle(8,templateData.ratio,'mm'),'fontSize':$calcStyle(7,templateData.ratio,'pt')}" @click="updateItem('A003')">
+    <div style="font-family: SimHei; display: flex;align-items: center;" :style="{'height':$calcStyle(8,templateData.ratio,'mm'),'fontSize':$calcStyle(7,templateData.ratio,'pt')}" @click="updateItem('A003')">
       {{ templateData.showA003 ? templateData.A003 : ''}}
     </div>
   </div>
@@ -63,22 +63,8 @@ export default {
 
 <style lang="scss" scoped>
 .tempate-box {
-  width: 50mm;
-  height: 50mm;
-  padding-top: 8mm;
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  overflow: hidden;
   &.isEdit {
     border: 1px solid #000;
-  }
-  .text {
-    height: 8mm;
-    font-size: 7pt;
-    font-family: SimHei;
-    display: flex;
-    align-items: center;
   }
 }
 </style>

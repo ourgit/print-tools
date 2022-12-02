@@ -37,12 +37,9 @@
             <div class="option-item">
               <div class="label">模板尺寸</div>
               <div class="value">
-                {{$calcStyle(templateData.pageWidth,templateData.ratio,'mm')}} * {{$calcStyle(templateData.pageHeight,templateData.ratio,'mm')}}
-              </div>
-            </div>
-            <div class="option-item">
-              <div class="value">
-                <el-slider v-model="ratio" :step="1" :min="-300" :max="500" :format-tooltip="formatTooltip"></el-slider>
+                <!-- {{$calcStyle(templateData.pageWidth,templateData.ratio,'mm')}} * {{$calcStyle(templateData.pageHeight,templateData.ratio,'mm')}} -->
+                <el-input @input="limitInput($event,'pageWidth')" v-model.trim="pageWidth" placeholder="模板宽度" style="width:120px"></el-input>mm *
+                <el-input @input="limitInput($event,'pageHeight')" v-model.trim="pageHeight" placeholder="模板高度" style="width:120px"></el-input>mm
               </div>
             </div>
           </div>
@@ -70,6 +67,7 @@
 </template>
 
 <script>
+import BigNumber from 'bignumber.js'
 import Store from 'electron-store';
 const store = new Store();
 import { v4 as uuid } from 'uuid'
@@ -95,7 +93,9 @@ export default {
       ratio: 100,
       showOption: false,
       currentItem: '',
-      saveLoading: false
+      saveLoading: false,
+      pageWidth: 0,
+      pageHeight: 0,
     };
   },
   created() {
@@ -114,6 +114,8 @@ export default {
         })
         this.templateData = JSON.parse(JSON.stringify(templateData))
         this.templateName = this.templateData.name
+        this.pageWidth = this.templateData.pageWidth
+        this.pageHeight = this.templateData.pageHeight
         this.ratio = this.templateData.ratio
       } else {
         const localTemplate = store.get('localTemplate') || []
@@ -122,18 +124,38 @@ export default {
         })
         this.templateData = JSON.parse(JSON.stringify(templateData))
         this.templateName = this.templateData.name
+        this.pageWidth = Number(new BigNumber(this.templateData.pageWidth).dividedBy(this.templateData.ratio)).toFixed(2)
+        this.pageHeight = Number(new BigNumber(this.templateData.pageHeight).dividedBy(this.templateData.ratio)).toFixed(2)
         this.ratio = this.templateData.ratio
+        console.log(this.ratio)
       }
     },
-    formatTooltip(val) {
-      if (!val) return
-      if (val >= 100) {
-        this.templateData.ratio = val
-        return val + '%'
+    limitInput(value, name) {
+      const val = ("" + value) // 第一步：转成字符串
+        .replace(/[^\d^\.]+/g, "") // 第二步：把不是数字，不是小数点的过滤掉
+        .replace(/^0+(\d)/, "$1") // 第三步：第一位0开头，0后面为数字，则过滤掉，取后面的数字
+        .replace(/^\./, "0.") // 第四步：如果输入的第一位为小数点，则替换成 0. 实现自动补全
+        .match(/^\d*(\.?\d{0,2})/g)[0] || ""; // 第五步：最终匹配得到结果 以数字开头，只有一个小数点，而且小数点后面只能有0到2位小数
+      if (name === 'pageWidth') {
+        this.pageWidth = val
+        if (val) {
+          const ratio = new BigNumber(this.templateData.pageWidth).dividedBy(new BigNumber(val))
+          this.pageHeight = Number(new BigNumber(this.templateData.pageHeight).dividedBy(ratio)).toFixed(2)
+          this.ratio = Number(ratio)
+          this.templateData.ratio = Number(ratio)
+        } else {
+          this.pageHeight = ''
+        }
       } else {
-        const ratio = 0 - (100 - val + 100)
-        this.templateData.ratio = ratio
-        return '-' + (100 - val + 100) + '%';
+        this.pageHeight = val
+        if (val) {
+          const ratio = new BigNumber(this.templateData.pageHeight).dividedBy(new BigNumber(val))
+          this.pageWidth = Number(new BigNumber(this.templateData.pageWidth).dividedBy(ratio)).toFixed(2)
+          this.ratio = Number(ratio)
+          this.templateData.ratio = Number(ratio)
+        } else {
+          this.pageWidth = ''
+        }
       }
     },
     updateItem(val) {
