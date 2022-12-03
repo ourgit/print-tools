@@ -20,7 +20,10 @@
     <div class="main">
       <el-table ref="multipleTable" :data="tableDataList" tooltip-effect="dark" :row-class-name="tableRowClassName" :height="`calc(100vh - 180px)`" style="width: 100%" @selection-change="selectedList = $event">
         <el-table-column type="selection" width="55"> </el-table-column>
-        <el-table-column v-for="(item, index) in tableColumn" :key="index" :prop="item.value" :label="item.label">
+        <el-table-column v-for="(item, index) in tableColumn" :key="index" :label="item.label">
+          <template #default="{ row }">
+            <el-input v-model="row[item.value]"></el-input>
+          </template>
         </el-table-column>
         <el-table-column label="操作" align="center" width="200">
           <template #default="{ row }">
@@ -148,14 +151,18 @@ export default {
       this.$route.meta.isBack = false
       return
     } else {
-      this.templateType = +this.$route.query.type;
-      this.templateId = +this.$route.query.id;
-      if (this.$route.query.localId) {
-        this.localId = this.$route.query.localId;
+      console.log('templateId', this.templateId)
+      console.log('routeId', this.$route.query.id)
+      if (this.templateId !== +this.$route.query.id) {
+        this.templateType = +this.$route.query.type;
+        this.templateId = +this.$route.query.id;
+        if (this.$route.query.localId) {
+          this.localId = this.$route.query.localId;
+        }
+        this.init();
+        this.tableData = []
+        this.tableDataList = []
       }
-      this.init();
-      this.tableData = []
-      this.tableDataList = []
     }
   },
   methods: {
@@ -178,7 +185,6 @@ export default {
       }
       const tableColumn = [];
       const templateData = this.templateData;
-      this.templateUrl = localPath + '/template/' + this.templateId + '.xlsx'
       switch (this.templateId) {
         case 1:
           tableColumn.push({
@@ -186,6 +192,7 @@ export default {
             value: "A002",
             excelLabel: templateData.A002Label.replace(/\s*/g, "")
           });
+          this.templateUrl = localPath + '/template/一维品种标签导入模板.xlsx'
           break;
         case 2:
           tableColumn.push(
@@ -200,6 +207,7 @@ export default {
               excelLabel: templateData.A003Label.replace(/\s*/g, ""),
             }
           );
+          this.templateUrl = localPath + '/template/单件标签导入模板.xlsx'
           break;
         case 3:
           tableColumn.push(
@@ -214,6 +222,7 @@ export default {
               excelLabel: templateData.A003Label.replace(/\s*/g, ""),
             }
           );
+          this.templateUrl = localPath + '/template/单件微型标签导入模板.xlsx'
           break;
         case 4:
           tableColumn.push(
@@ -238,6 +247,7 @@ export default {
               excelLabel: templateData.deptLabel.replace(/\s*/g, ""),
             }
           );
+          this.templateUrl = localPath + '/template/单件管理标签导入模板.xlsx'
           break;
         case 5:
           tableColumn.push(
@@ -282,6 +292,7 @@ export default {
               excelLabel: templateData.A003Label.replace(/\s*/g, ""),
             }
           );
+          this.templateUrl = localPath + '/template/单件分箱标签导入模板.xlsx'
           break;
         case 6:
           tableColumn.push(
@@ -296,6 +307,7 @@ export default {
               excelLabel: templateData.A007Label.replace(/\s*/g, ""),
             }
           );
+          this.templateUrl = localPath + '/template/零部件品种标签导入模板.xlsx'
           break;
         case 7:
           tableColumn.push(
@@ -315,6 +327,7 @@ export default {
               excelLabel: templateData.A007Label.replace(/\s*/g, ""),
             }
           );
+          this.templateUrl = localPath + '/template/零部件单件标签导入模板.xlsx'
           break;
         case 8:
           tableColumn.push(
@@ -354,6 +367,7 @@ export default {
               excelLabel: templateData.A002Label.replace(/\s*/g, ""),
             }
           );
+          this.templateUrl = localPath + '/template/多个单品种标签导入模板.xlsx'
           break;
         case 9:
           tableColumn.push(
@@ -398,6 +412,7 @@ export default {
               excelLabel: templateData.A010Label.replace(/\s*/g, ""),
             }
           );
+          this.templateUrl = localPath + '/template/多个单品种零部件标签导入模板.xlsx'
           break;
       }
       this.tableColumn = tableColumn;

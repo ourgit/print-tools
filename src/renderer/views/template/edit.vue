@@ -114,8 +114,8 @@ export default {
         })
         this.templateData = JSON.parse(JSON.stringify(templateData))
         this.templateName = this.templateData.name
-        this.pageWidth = this.templateData.pageWidth
-        this.pageHeight = this.templateData.pageHeight
+        this.pageWidth = Number(new BigNumber(this.templateData.pageWidth).dividedBy(this.templateData.ratio)).toFixed(2)
+        this.pageHeight = Number(new BigNumber(this.templateData.pageHeight).dividedBy(this.templateData.ratio)).toFixed(2)
         this.ratio = this.templateData.ratio
       } else {
         const localTemplate = store.get('localTemplate') || []
@@ -195,6 +195,8 @@ export default {
           this.templateData = JSON.parse(JSON.stringify(templateData))
           this.templateData.localId = this.localId
         }
+        this.pageWidth = Number(new BigNumber(this.templateData.pageWidth).dividedBy(this.templateData.ratio)).toFixed(2)
+        this.pageHeight = Number(new BigNumber(this.templateData.pageHeight).dividedBy(this.templateData.ratio)).toFixed(2)
         this.ratio = this.templateData.ratio
       })
     }

@@ -91,7 +91,7 @@
     "deptLabel": "管理部门",
     "deptShowLabel": true,
     "dept": "XXX",
-    "showDept": true
+    "showdept": true
   },
   {
     "id": 5,

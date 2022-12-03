@@ -11,7 +11,7 @@
         <div style="margin-bottom: 1mm;" v-if="templateData.showA001" :style="{'marginBottom':$calcStyle(1,templateData.ratio,'mm')}" @click="updateItem('A001')">{{  templateData.A001Label + ':' + templateData.A001 }}</div>
         <div style="margin-bottom: 1mm;" v-if="templateData.showA002" :style="{'marginBottom':$calcStyle(1,templateData.ratio,'mm')}" @click="updateItem('A002')">{{ templateData.A002Label + ':' + templateData.A002}}</div>
         <div style="margin-bottom: 1mm;" v-if="templateData.showA003" :style="{'marginBottom':$calcStyle(1,templateData.ratio,'mm')}" @click="updateItem('A003')">{{ templateData.A003Label + ':' + templateData.A003}}</div>
-        <div style="margin-bottom: 1mm;" v-if="templateData.showDept" :style="{'marginBottom':$calcStyle(1,templateData.ratio,'mm')}" @click="updateItem('dept')">{{ templateData.deptLabel + ':' + templateData.dept}}</div>
+        <div style="margin-bottom: 1mm;" v-if="templateData.showdept" :style="{'marginBottom':$calcStyle(1,templateData.ratio,'mm')}" @click="updateItem('dept')">{{ templateData.deptLabel + ':' + templateData.dept}}</div>
       </div>
     </div>
   </div>
