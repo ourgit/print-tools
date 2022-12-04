@@ -14,7 +14,7 @@
         <div class="template-name">
           <el-input v-model="templateName" placeholder="请输入标签模板名称"></el-input>
         </div>
-        <div class="template-content">
+        <div class="template-content" id="template-box">
           <template1 v-if="templateId === 1" :templateData="templateData" isEdit :ratio="ratio" @updateItem="updateItem" />
           <template2 v-if="templateId === 2" :templateData="templateData" isEdit :ratio="ratio" @updateItem="updateItem" />
           <template3 v-if="templateId === 3" :templateData="templateData" isEdit :ratio="ratio" />
@@ -26,18 +26,17 @@
           <template9 v-if="templateId === 9" :templateData="templateData" isEdit :ratio="ratio" @updateItem="updateItem" />
         </div>
         <div class="btn">
-          <el-button @click="reset">重置</el-button>
-          <el-button :loading="saveLoading" type="primary" @click="saveTemplate">保存</el-button>
+          <el-button @click="reset" id="reset-btn">重置</el-button>
+          <el-button :loading="saveLoading" type="primary" id="save-btn" @click="saveTemplate">保存</el-button>
         </div>
       </div>
       <div class="option-wrap">
-        <div class="option-setting">
+        <div class="option-setting" id="option-setting">
           <div class="title">缩放设置</div>
           <div class="option-list">
             <div class="option-item">
               <div class="label">模板尺寸</div>
               <div class="value">
-                <!-- {{$calcStyle(templateData.pageWidth,templateData.ratio,'mm')}} * {{$calcStyle(templateData.pageHeight,templateData.ratio,'mm')}} -->
                 <el-input @input="limitInput($event,'pageWidth')" v-model.trim="pageWidth" placeholder="模板宽度" style="width:120px"></el-input>mm *
                 <el-input @input="limitInput($event,'pageHeight')" v-model.trim="pageHeight" placeholder="模板高度" style="width:120px"></el-input>mm
               </div>
@@ -71,6 +70,8 @@ import BigNumber from 'bignumber.js'
 import Store from 'electron-store';
 const store = new Store();
 import { v4 as uuid } from 'uuid'
+import Driver from 'driver.js';
+import 'driver.js/dist/driver.min.css';
 import Template1 from "@/components/template/template1.vue";
 import Template2 from "@/components/template/template2.vue";
 import Template3 from "@/components/template/template3.vue";
@@ -96,6 +97,7 @@ export default {
       saveLoading: false,
       pageWidth: 0,
       pageHeight: 0,
+      driver: null
     };
   },
   created() {
@@ -106,7 +108,65 @@ export default {
     }
     this.init()
   },
+  mounted() {
+    const editGuide = store.get('editGuide') || false
+    if (!editGuide) {
+      this.driver = new Driver({
+        opacity: 0.1,
+        animate: true,
+        doneBtnText: '我知道了',
+        closeBtnText: '跳过',
+        nextBtnText: '下一步',
+        prevBtnText: '上一步',
+        keyboardControl: true
+      })
+      this.guide()
+    }
+  },
   methods: {
+    guide() {
+      const steps = [
+        {
+          element: '#template-box',
+          stageBackground: '#fff',
+          popover: {
+            title: '标签模板展示区',
+            description: '点击模板中的文字单元，可以对该文字单元进行修改',
+            position: 'bottom'
+          }
+        },
+        {
+          element: '#option-setting',
+          stageBackground: '#fff',
+          popover: {
+            title: '更改模板尺寸',
+            description: '这里可以修改标签模板的尺寸',
+            position: 'bottom'
+          }
+        },
+        {
+          element: '#reset-btn',
+          stageBackground: '#fff',
+          popover: {
+            title: '重置标签模板',
+            description: '点击此按钮会将该标签模板重置成最原始的配置',
+            position: 'bottom'
+          }
+        },
+        {
+          element: '#save-btn',
+          stageBackground: '#fff',
+          popover: {
+            title: '保存标签模板',
+            description: '点击此按钮会将该标签模板保存为本地标签模板',
+            position: 'bottom'
+          }
+        }
+      ]
+      this.driver.defineSteps(steps)
+      this.driver.start()
+      store.set('editGuide', true)
+    },
     init() {
       if (this.templateType === 1) {
         const templateData = template.find(item => {

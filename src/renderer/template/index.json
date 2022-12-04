@@ -205,5 +205,12 @@
     "showA902": true,
     "showA051": true,
     "showA007": true
+  },
+  {
+    "id": 10,
+    "name": "混合标签",
+    "pageWidth": 100,
+    "pageHeight": 100,
+    "ratio": 1
   }
 ]

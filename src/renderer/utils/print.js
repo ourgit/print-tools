@@ -18,6 +18,7 @@ const Print = function (dom, printName, webview, pageWidth, pageHeight) {
 Print.prototype = {
   init: function () {
     var content = this.getStyle() + this.getHtml()
+    console.log(content)
     this.webview.send('webview-print-render', {
       printName: this.printName,
       html: content,

@@ -140,30 +140,15 @@ export default {
       }
     };
   },
-  beforeRouteEnter(to, form, next) {
-    if (form.path == '/preview') {
-      to.meta.isBack = true
-    }
-    next()
-  },
-  activated() {
-    if (this.$route.meta.isBack) {
-      this.$route.meta.isBack = false
-      return
+  created() {
+    this.templateType = +this.$route.query.type;
+    this.templateId = +this.$route.query.id;
+    if (this.$route.query.localId) {
+      this.localId = this.$route.query.localId;
     } else {
-      console.log('templateId', this.templateId)
-      console.log('routeId', this.$route.query.id)
-      if (this.templateId !== +this.$route.query.id) {
-        this.templateType = +this.$route.query.type;
-        this.templateId = +this.$route.query.id;
-        if (this.$route.query.localId) {
-          this.localId = this.$route.query.localId;
-        }
-        this.init();
-        this.tableData = []
-        this.tableDataList = []
-      }
+      this.localId = 0
     }
+    this.init();
   },
   methods: {
     init() {
@@ -415,6 +400,7 @@ export default {
           this.templateUrl = localPath + '/template/多个单品种零部件标签导入模板.xlsx'
           break;
       }
+      console.log(templateData)
       this.tableColumn = tableColumn;
       this.forminit()
     },
@@ -482,7 +468,7 @@ export default {
       let filterData = []
       const keyWord = this.keywrods.trim()
       if (keyWord) {
-        for (var i = 0;i < allData.length;i++) {
+        for (var i = 0; i < allData.length; i++) {
           const itemStr = JSON.stringify(allData[i])
           if (itemStr.split(keyWord).length > 1) {
             filterData.push(allData[i])
@@ -585,8 +571,6 @@ export default {
     generateCode(formName) {
       this.$refs[formName].validate((valid) => {
         if (valid) {
-
-          console.log(tempDataList)
           const dateTime = new Date(new Date().toLocaleDateString()).getTime()
           const codeHistory = store.get('codeHistory') || []
           const todayHistory = codeHistory.filter(item => {
