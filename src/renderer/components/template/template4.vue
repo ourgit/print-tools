@@ -1,5 +1,5 @@
 <template>
-  <div :class="['tempate-box', {isEdit}]" style="display: flex;flex-direction: column;overflow: hidden;" :style="{'width':$calcStyle(70,templateData.ratio,'mm'),'height':$calcStyle(30,templateData.ratio,'mm')}">
+  <div :class="['tempate-box', {isEdit}]" style="display: flex;box-sizing: border-box;flex-direction: column;overflow: hidden;" :style="{'width':$calcStyle(70,templateData.ratio,'mm'),'height':$calcStyle(30,templateData.ratio,'mm')}">
     <div style="font-family: SimHei;font-weight: 700;display: flex;justify-content: center;align-items: center;" :style="{'fontSize':$calcStyle(10,templateData.ratio,'pt'),'height':$calcStyle(8,templateData.ratio,'mm')}" @click="updateItem('Title')">
       {{ templateData.showTitle ? templateData.TitleLabel : ''}}
     </div>

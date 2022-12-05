@@ -22,7 +22,7 @@
         <el-table-column type="selection" width="55"> </el-table-column>
         <el-table-column v-for="(item, index) in tableColumn" :key="index" :label="item.label">
           <template #default="{ row }">
-            <el-input v-model="row[item.value]"></el-input>
+            <el-input v-model="row[item.value]" @change="changeInput(row)"></el-input>
           </template>
         </el-table-column>
         <el-table-column label="操作" align="center" width="200">
@@ -97,6 +97,7 @@ import path from 'path'
 import Store from "electron-store";
 const store = new Store();
 import template from "@/template/index.json";
+import { v4 as uuid } from 'uuid'
 import XLSX from "xlsx";
 import { generateSingleCode } from "@/utils/util";
 let localPath = ''
@@ -400,9 +401,43 @@ export default {
           this.templateUrl = localPath + '/template/多个单品种零部件标签导入模板.xlsx'
           break;
       }
-      console.log(templateData)
       this.tableColumn = tableColumn;
       this.forminit()
+      const localCacheData = store.get('localCacheData') || []
+      const localCacheIndex = localCacheData.findIndex(item => item.templateId === this.templateId && item.localId === this.localId)
+      if (localCacheIndex !== -1) {
+        let newDataList = []
+        const dataList = JSON.parse(JSON.stringify(localCacheData[localCacheIndex].dataList))
+        dataList.forEach(item => {
+          let templateData = JSON.parse(JSON.stringify(this.templateData))
+          this.tableColumn.forEach(column => {
+            templateData[column.value] = item[column.value];
+          })
+          newDataList.push(templateData)
+        })
+        this.tableData = newDataList
+        this.currentPage = localCacheData[localCacheIndex].currentPage
+        this.size = localCacheData[localCacheIndex].size
+        this.filterData()
+      }
+    },
+    saveCache() {
+      let localCacheData = store.get('localCacheData') || []
+      const localCacheIndex = localCacheData.findIndex(item => item.templateId === this.templateId && item.localId === this.localId)
+      if (localCacheIndex === -1) {
+        localCacheData.push({
+          templateId: this.templateId,
+          localId: this.localId,
+          dataList: this.tableData,
+          currentPage: this.currentPage,
+          size: this.size
+        })
+      } else {
+        localCacheData[localCacheIndex].currentPage = this.currentPage
+        localCacheData[localCacheIndex].size = this.size
+        localCacheData[localCacheIndex].dataList = this.tableData
+      }
+      store.set('localCacheData', localCacheData)
     },
     tableRowClassName({ row, rowIndex }) {
       row.index = rowIndex;
@@ -431,6 +466,7 @@ export default {
     clearData() {
       this.tableData = [];
       this.tableDataList = []
+      this.saveCache()
     },
     formatExcelDate(numb, format = "-") {
       if (!numb) {
@@ -457,6 +493,11 @@ export default {
         (date < 10 ? "0" + date : date)
       );
     },
+    changeInput(e) {
+      const listIndex = this.tableData.findIndex(item => item.logId === e.logId)
+      this.tableData[listIndex] = e
+      this.saveCache()
+    },
     handleSizeChange(val) {
       this.size = val
       this.currentPage = 1
@@ -468,7 +509,7 @@ export default {
       let filterData = []
       const keyWord = this.keywrods.trim()
       if (keyWord) {
-        for (var i = 0; i < allData.length; i++) {
+        for (var i = 0;i < allData.length;i++) {
           const itemStr = JSON.stringify(allData[i])
           if (itemStr.split(keyWord).length > 1) {
             filterData.push(allData[i])
@@ -491,6 +532,7 @@ export default {
         })
       }
       this.total = filterData.length
+      this.saveCache()
     },
     importExcel(file) {
       const files = { 0: file.raw };
@@ -542,6 +584,7 @@ export default {
       excelData.forEach((excel) => {
         const templateData = JSON.parse(JSON.stringify(this.templateData));
         this.tableColumn.forEach(item => {
+          templateData.logId = uuid()
           if (item.excelLabel) {
             templateData[item.value] = excel[item.excelLabel] || "";
           } else {
@@ -583,7 +626,6 @@ export default {
           if (historyIndex !== -1) {
             lastSeq = todayHistory[historyIndex].lastSeq
           }
-          const dateList = []
           let seq = 0
           tempDataList.forEach((item, index) => {
             seq = lastSeq + (index + 1)
@@ -619,6 +661,7 @@ export default {
       if (validate) {
         this.dialogTableVisible = false;
         const formList = JSON.parse(JSON.stringify(this.form))
+        formList.logId = uuid()
         this.tableData.unshift(formList);
         this.forminit()
         this.filterData()

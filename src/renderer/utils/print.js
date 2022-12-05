@@ -92,13 +92,13 @@ Print.prototype = {
   isDOM:
     typeof HTMLElement === 'object'
       ? function (obj) {
-        return obj instanceof HTMLElement
-      }
+          return obj instanceof HTMLElement
+        }
       : function (obj) {
-        return (
-          obj && typeof obj === 'object' && obj.nodeType === 1 && typeof obj.nodeName === 'string'
-        )
-      },
+          return (
+            obj && typeof obj === 'object' && obj.nodeType === 1 && typeof obj.nodeName === 'string'
+          )
+        },
 }
 const PrintPlugin = {}
 PrintPlugin.install = function (Vue, options) {
