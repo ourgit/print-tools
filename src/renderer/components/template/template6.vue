@@ -1,7 +1,7 @@
 <template>
   <div :class="['tempate-box', {isEdit}]" style="display: flex;box-sizing: border-box;flex-direction: column;align-items: center;overflow: hidden;" :style="{'width':$calcStyle(50,templateData.ratio,'mm'),'height':$calcStyle(50,templateData.ratio,'mm'),'paddingTop':$calcStyle(8,templateData.ratio,'mm')}">
     <img :src="qrCodeUrl" :style="{'width':$calcStyle(34,templateData.ratio,'mm'),'height':$calcStyle(34,templateData.ratio,'mm')}">
-    <div style="font-family: SimHei;display: flex;align-items: center;" :style="{'height':$calcStyle(8,templateData.ratio,'mm'),'fontSize':$calcStyle(7,templateData.ratio,'pt')}">
+    <div style="font-family: SimHei;display: flex;box-sizing: border-box;align-items: center;" :style="{'height':$calcStyle(8,templateData.ratio,'mm'),'fontSize':$calcStyle(7,templateData.ratio,'pt')}">
       <span style="margin-right:10px" @click="updateItem('A002')">{{ templateData.showA002 ?  templateData.A002Label + ':' + templateData.A002 : ''}}</span>
       <span @click="updateItem('A007')">{{ templateData.showA007 ? templateData.A007Label + ':' + templateData.A007 : ''}}</span>
     </div>

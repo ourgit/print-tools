@@ -17,7 +17,7 @@
     <webview id="printWebview" ref="printWebview" :src="fullPath" nodeintegration webpreferences="contextIsolation=no" style="visibility: hidden;display: none;" />
     <div class="preview-wrap">
       <div v-for="(item,index) in printDataList" :key="index">
-        <section :ref="'print'+ index">
+        <div :id="'print'+ index">
           <template1 v-if="templateId === 1" :templateData="item" />
           <template2 v-if="templateId === 2" :templateData="item" />
           <template3 v-if="templateId === 3" :templateData="item" />
@@ -27,11 +27,11 @@
           <template7 v-if="templateId === 7" :templateData="item" />
           <template8 v-if="templateId === 8" :templateData="item" />
           <template9 v-if="templateId === 9" :templateData="item" />
-        </section>
+        </div>
       </div>
     </div>
     <div class="btn">
-      <el-button type="primary" @click="handlePrint">打印</el-button>
+      <el-button type="primary" @click="lodopPrint">打印</el-button>
     </div>
   </div>
 </template>
@@ -48,6 +48,7 @@ import Template6 from "@/components/template/template6.vue";
 import Template7 from "@/components/template/template7.vue";
 import Template8 from "@/components/template/template8.vue";
 import Template9 from "@/components/template/template9.vue";
+import { getLodop } from '@/utils/LodopFuncs'
 let fullPath = ''
 if (process.env.NODE_ENV === 'development') {
   fullPath = '/static/print.html';
@@ -58,6 +59,8 @@ export default {
   components: { Template1, Template2, Template3, Template4, Template5, Template6, Template7, Template8, Template9 },
   data() {
     return {
+      jobCode: '1',//job码
+      printStatus: 0,//打印状态
       templateId: 0,
       printerList: [],
       selectedPrinterName: '',
@@ -76,7 +79,6 @@ export default {
         webview
           .print({
             silent: true,//静默打印
-            printBackground: true,
             deviceName: this.selectedPrinterName, //打印机名称
           })
           .then((res) => {
@@ -101,6 +103,61 @@ export default {
     }
   },
   methods: {
+    lodopPrint() {
+      if (!this.selectedPrinterName) {
+        return this.$message({
+          message: "请先选择打印机",
+          type: "warning",
+        });
+      }
+      var self = this;
+      const id = 'print' + this.printIndex
+      const templateData = this.printDataList[0]
+      const pageWidth = this.$calcStyle(templateData.pageWidth, templateData.ratio, 'mm')
+      const pageHeight = this.$calcStyle(templateData.pageHeight, templateData.ratio, 'mm')
+      const html = this.$print(document.getElementById(id))
+      let LODOP = getLodop()
+      LODOP.PRINT_INIT(id)
+      LODOP.SET_PRINTER_INDEXA(this.selectedPrinterName)
+      LODOP.SET_PRINT_PAGESIZE(1, pageWidth, pageHeight, "")
+      LODOP.ADD_PRINT_HTM(0, 0, pageWidth, pageHeight, document.getElementById(id).innerHTML);
+      // LODOP.PREVIEW();
+      LODOP.SET_PRINT_MODE("CATCH_PRINT_STATUS", true);//执行该语句之后，PRINT指令不再返回那个所谓“打印成功”
+      if (LODOP.CVERSION) {
+        LODOP.On_Return = function (TaskID, Value) {
+          console.log("TaskID:" + TaskID);
+          console.log("Value:" + Value);//job代码
+          self.jobCode = Value;
+          var timer = setInterval(function () {
+            console.log("每次轮询的状态：" + self.printStatus);
+            if (self.printStatus != 0 || self.printStatus != false) {
+              clearInterval(timer);
+              return;
+            }
+            self.getStatusValue(Value);
+          }, 300);
+        };
+        LODOP.PRINT();
+        return;
+      } else {
+        console.log("c-lodop出错了");
+      }
+    },
+    getStatusValue(job) {//根据job代码，获取是否打印成功
+      var self = this;
+      LODOP.On_Return = function (TaskID, Value) {
+        console.log("TaskID:" + TaskID);
+        console.log("打印成功状态:" + Value);//打印成功状态
+        self.printStatus = Value;
+        self.printIndex++
+        if (self.printIndex < self.printDataList.length) {
+          setTimeout(self.lodopPrint, 500)
+        } else {
+          self.printIndex = 0
+        }
+      };
+      LODOP.GET_VALUE("PRINT_STATUS_OK", job);
+    },
     goBack() {
       this.$router.back();
     },

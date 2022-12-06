@@ -1,7 +1,11 @@
 // 打印类属性、方法定义
 /* eslint-disable */
-const Print = function (dom) {
-  if (!(this instanceof Print)) return new Print(dom)
+const Print = function (dom, printName, webview, pageWidth, pageHeight) {
+  if (!(this instanceof Print)) return new Print(dom, printName, webview, pageWidth, pageHeight)
+  this.printName = printName
+  this.webview = webview
+  this.pageWidth = pageWidth
+  this.pageHeight = pageHeight
   if (typeof dom === 'string') {
     this.dom = document.querySelector(dom)
   } else {
@@ -13,9 +17,24 @@ const Print = function (dom) {
 }
 Print.prototype = {
   init: function () {
-    var content = this.getHtml()
-    return content
+    var content = this.getStyle() + this.getHtml()
+    content = content.replace(/\<\!\----\>/g, '')
+    console.log(content)
+    this.webview.send('webview-print-render', {
+      printName: this.printName,
+      html: content,
+    })
   },
+  getStyle: function () {
+    var str =
+      '<style>html,body,div{margin:0;padding:0;box-sizing: border-box;}@page{size:' +
+      this.pageWidth +
+      ' ' +
+      this.pageHeight +
+      '!important;margin: 0px;}</style>'
+    return str
+  },
+
   getHtml: function () {
     var inputs = document.querySelectorAll('input')
     var textareas = document.querySelectorAll('textarea')
