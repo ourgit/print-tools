@@ -1,7 +1,7 @@
 <template>
   <div :class="['tempate-box', {isEdit}]" style="display: flex;flex-direction: column;box-sizing: border-box;align-items: center;overflow: hidden;" :style="{'width':$calcStyle(40,templateData.ratio,'mm'),'height':$calcStyle(15,templateData.ratio,'mm'),'paddingTop':$calcStyle(2.5,templateData.ratio,'mm')}">
     <canvas id="barCode" :style="{'width':$calcStyle(30,templateData.ratio,'mm'),'height':$calcStyle(10,templateData.ratio,'mm')}"></canvas>
-    <div style="font-family: SimHei;" :style="{'height':$calcStyle(2.5,templateData.ratio,'mm'),'fontSize':$calcStyle(6,templateData.ratio,'pt')}" @click="updateItem('A002')">
+    <div style="font-family: '黑体'" :style="{'height':$calcStyle(2.5,templateData.ratio,'mm'),'fontSize':$calcStyle(6,templateData.ratio,'pt')}" @click="updateItem('A002')">
       {{ templateData.showA002 ? templateData.A002 : ''}}
     </div>
   </div>

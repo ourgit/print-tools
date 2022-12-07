@@ -2,7 +2,7 @@
   <div class="app-container">
     <div class="template-wrap">
       <div class="title">
-        系统标签模板
+        基础标签模板
       </div>
       <div class="template-list">
         <div class="template-item" v-for="(item, index) in systemList" :key="index">

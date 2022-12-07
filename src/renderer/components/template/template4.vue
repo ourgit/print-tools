@@ -1,13 +1,13 @@
 <template>
   <div :class="['tempate-box', {isEdit}]" style="display: flex;box-sizing: border-box;flex-direction: column;overflow: hidden;" :style="{'width':$calcStyle(70,templateData.ratio,'mm'),'height':$calcStyle(30,templateData.ratio,'mm')}">
-    <div style="font-family: SimHei;font-weight: 700;display: flex;justify-content: center;align-items: center;" :style="{'fontSize':$calcStyle(10,templateData.ratio,'pt'),'height':$calcStyle(8,templateData.ratio,'mm')}" @click="updateItem('Title')">
+    <div style="font-family: '黑体';font-weight: 700;display: flex;justify-content: center;align-items: center;" :style="{'fontSize':$calcStyle(10,templateData.ratio,'pt'),'height':$calcStyle(8,templateData.ratio,'mm')}" @click="updateItem('Title')">
       {{ templateData.showTitle ? templateData.TitleLabel : ''}}
     </div>
     <div style="display: flex;box-sizing: border-box;align-items: center;" :style="{'paddingLeft':$calcStyle(4,templateData.ratio,'mm'),'paddingRight':$calcStyle(2,templateData.ratio,'mm')}">
       <div :style="{'width':$calcStyle(18,templateData.ratio,'mm')}">
         <img :src="qrCodeUrl" :style="{'width':$calcStyle(18,templateData.ratio,'mm'),'height':$calcStyle(18,templateData.ratio,'mm')}">
       </div>
-      <div style="flex: 1;display: flex;box-sizing: border-box;flex-direction: column;font-family: SimHei;" :style="{'fontSize':$calcStyle(7,templateData.ratio,'pt'),'marginLeft':$calcStyle(2,templateData.ratio,'mm')}">
+      <div style="flex: 1;display: flex;box-sizing: border-box;flex-direction: column;font-family: '黑体';" :style="{'fontSize':$calcStyle(7,templateData.ratio,'pt'),'marginLeft':$calcStyle(2,templateData.ratio,'mm')}">
         <div style="margin-bottom: 1mm;" v-if="templateData.showA001" :style="{'marginBottom':$calcStyle(1,templateData.ratio,'mm')}" @click="updateItem('A001')">{{  templateData.A001Label + ':' + templateData.A001 }}</div>
         <div style="margin-bottom: 1mm;" v-if="templateData.showA002" :style="{'marginBottom':$calcStyle(1,templateData.ratio,'mm')}" @click="updateItem('A002')">{{ templateData.A002Label + ':' + templateData.A002}}</div>
         <div style="margin-bottom: 1mm;" v-if="templateData.showA003" :style="{'marginBottom':$calcStyle(1,templateData.ratio,'mm')}" @click="updateItem('A003')">{{ templateData.A003Label + ':' + templateData.A003}}</div>

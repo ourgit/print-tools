@@ -110,7 +110,6 @@ export default {
           type: "warning",
         });
       }
-      var self = this;
       const id = 'print' + this.printIndex
       const templateData = this.printDataList[0]
       const pageWidth = this.$calcStyle(templateData.pageWidth, templateData.ratio, 'mm')
@@ -122,25 +121,12 @@ export default {
       LODOP.SET_PRINT_PAGESIZE(1, pageWidth, pageHeight, "")
       LODOP.ADD_PRINT_HTM(0, 0, pageWidth, pageHeight, document.getElementById(id).innerHTML);
       // LODOP.PREVIEW();
-      LODOP.SET_PRINT_MODE("CATCH_PRINT_STATUS", true);//执行该语句之后，PRINT指令不再返回那个所谓“打印成功”
-      if (LODOP.CVERSION) {
-        LODOP.On_Return = function (TaskID, Value) {
-          console.log("TaskID:" + TaskID);
-          console.log("Value:" + Value);//job代码
-          self.jobCode = Value;
-          var timer = setInterval(function () {
-            console.log("每次轮询的状态：" + self.printStatus);
-            if (self.printStatus != 0 || self.printStatus != false) {
-              clearInterval(timer);
-              return;
-            }
-            self.getStatusValue(Value);
-          }, 300);
-        };
-        LODOP.PRINT();
-        return;
+      LODOP.PRINT();
+      this.printIndex++
+      if (this.printIndex < this.printDataList.length) {
+        setTimeout(this.lodopPrint, 500)
       } else {
-        console.log("c-lodop出错了");
+        this.printIndex = 0
       }
     },
     getStatusValue(job) {//根据job代码，获取是否打印成功

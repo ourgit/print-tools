@@ -1,6 +1,6 @@
 <template>
   <div :class="['tempate-box', {isEdit}]" style="box-sizing: border-box;overflow: hidden;" :style="{'width':$calcStyle(100,templateData.ratio,'mm'),'height':$calcStyle(50,templateData.ratio,'mm'),'padding':$calcStyle(2,templateData.ratio,'mm')}">
-    <div style="display: flex;border: 1px solid #000;overflow: hidden;" :style="{'height':$calcStyle(45,templateData.ratio,'mm')}">
+    <div style="font-family: '黑体';display: flex;border: 1px solid #000;overflow: hidden;" :style="{'height':$calcStyle(45,templateData.ratio,'mm')}">
       <div style="border-right: 1px solid #000;box-sizing: border-box;" :style="{'width':$calcStyle(40,templateData.ratio,'mm')}">
         <div style="border-bottom: 1px solid #000;display: flex;box-sizing: border-box;justify-content: center;align-items: center;" :style="{'height':$calcStyle(36,templateData.ratio,'mm')}">
           <img :src="qrCodeUrl" :style="{'width':$calcStyle(34,templateData.ratio,'mm'),'height':$calcStyle(34,templateData.ratio,'mm')}">
