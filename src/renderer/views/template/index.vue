@@ -6,28 +6,16 @@
       </div>
       <div class="template-list">
         <div class="template-item" v-for="(item, index) in systemList" :key="index">
-          <template v-if="(item.id === 10)">
-            <div class="code-box">
-              <img class="code-img" :src="item.src" title="点击进行数据导入">
-            </div>
-            <div class="name">{{item.name}}</div>
-            <div class="size">{{item.pageSize}}</div>
-            <div class="btn">
+          <router-link :to="{path:'/data',query: { type: 1,id: item.id }}" class="code-box">
+            <img class="code-img" :src="item.src" title="点击进行数据导入">
+          </router-link>
+          <router-link :to="{path:'/data',query: { type: 1,id: item.id }}" class="name">B-{{ item.id }} {{item.name}}</router-link>
+          <div class="size">{{item.pageSize}}</div>
+          <div class="btn">
+            <router-link :to="{path:'/editTemplate',query: { type: 1,id: item.id }}">
               <el-button type="primary" class="edit-btn" size="small">编辑</el-button>
-            </div>
-          </template>
-          <template v-else>
-            <router-link :to="{path:'/data',query: { type: 1,id: item.id }}" class="code-box">
-              <img class="code-img" :src="item.src" title="点击进行数据导入">
             </router-link>
-            <router-link :to="{path:'/data',query: { type: 1,id: item.id }}" class="name">{{item.name}}</router-link>
-            <div class="size">{{item.pageSize}}</div>
-            <div class="btn">
-              <router-link :to="{path:'/editTemplate',query: { type: 1,id: item.id }}">
-                <el-button type="primary" class="edit-btn" size="small">编辑</el-button>
-              </router-link>
-            </div>
-          </template>
+          </div>
         </div>
       </div>
     </div>
@@ -38,7 +26,7 @@
           <router-link :to="{path:'/data',query: { type: 2,id: item.id,localId: item.localId }}" class="code-box">
             <img class="code-img" :src="item.src" title="点击进行数据导入">
           </router-link>
-          <router-link :to="{path:'/data',query: { type: 2,id: item.id,localId: item.localId }}" class="name">{{item.name}}</router-link>
+          <router-link :to="{path:'/data',query: { type: 2,id: item.id,localId: item.localId }}" class="name">DB-{{ item.id }} {{item.name}}</router-link>
           <div class="size">{{item.pageSize}}</div>
           <div class="btn">
             <router-link :to="{path:'/editTemplate',query: { type: 2,id: item.id,localId: item.localId }}">
