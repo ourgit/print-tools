@@ -202,69 +202,75 @@ function getSecondMapCode(code) {
         case 33:
             return 'U'
     }
-
-    function generateSeq() {
-        const d = new Date();
-        const hours = d.getHours() + 1;
-        const minutes = d.getMinutes();
-        const seconds = d.getSeconds();
-        const milliseconds = d.getMilliseconds();
-        const rand = getRandomInt(31);
-        return hours.toString(32) + minutes.toString(32)
-            + seconds.toString(32) + milliseconds.toString(32) + rand.toString(32)
-    }
-
-    function getRandomInt(max) {
-        return Math.floor(Math.random() * max);
-    }
-    //
-    // function to32x(code) {
-    //     if (code >= 0 && code <= 9) return String(code);
-    //     switch (code) {
-    //         case 10:
-    //             return 'A'
-    //         case 11:
-    //             return 'B'
-    //         case 12:
-    //             return 'C'
-    //         case 13:
-    //             return 'D'
-    //         case 14:
-    //             return 'E'
-    //         case 15:
-    //             return 'F'
-    //         case 16:
-    //             return 'G'
-    //         case 17:
-    //             return 'H'
-    //         case 18:
-    //             return 'J'
-    //         case 19:
-    //             return 'K'
-    //         case 20:
-    //             return 'L'
-    //         case 21:
-    //             return 'M'
-    //         case 22:
-    //             return 'N'
-    //         case 23:
-    //             return 'P'
-    //         case 24:
-    //             return 'Q'
-    //         case 25:
-    //             return 'R'
-    //         case 26:
-    //             return 'T'
-    //         case 27:
-    //             return 'U'
-    //         case 28:
-    //             return 'V'
-    //         case 29:
-    //             return 'W'
-    //         case 30:
-    //             return 'X'
-    //         case 31:
-    //             return 'Y'
-    //     }
-    // }
 }
+
+function generateSeq() {
+    const d = new Date();
+    const hours = d.getHours() + 1;
+    const minutes = d.getMinutes();
+    const seconds = d.getSeconds();
+    const milliseconds = randomIntFromInterval(100, 999);
+    // const milliseconds = d.getMilliseconds();
+    const rand = getRandomInt(31);
+    return hours.toString(32) + minutes.toString(32)
+        + seconds.toString(32) + milliseconds.toString(32) + rand.toString(32)
+}
+
+function getRandomInt(max) {
+    return Math.floor(Math.random() * max);
+}
+
+function randomIntFromInterval(min, max) { // min and max included
+    return Math.floor(Math.random() * (max - min + 1) + min)
+}
+
+//
+// function to32x(code) {
+//     if (code >= 0 && code <= 9) return String(code);
+//     switch (code) {
+//         case 10:
+//             return 'A'
+//         case 11:
+//             return 'B'
+//         case 12:
+//             return 'C'
+//         case 13:
+//             return 'D'
+//         case 14:
+//             return 'E'
+//         case 15:
+//             return 'F'
+//         case 16:
+//             return 'G'
+//         case 17:
+//             return 'H'
+//         case 18:
+//             return 'J'
+//         case 19:
+//             return 'K'
+//         case 20:
+//             return 'L'
+//         case 21:
+//             return 'M'
+//         case 22:
+//             return 'N'
+//         case 23:
+//             return 'P'
+//         case 24:
+//             return 'Q'
+//         case 25:
+//             return 'R'
+//         case 26:
+//             return 'T'
+//         case 27:
+//             return 'U'
+//         case 28:
+//             return 'V'
+//         case 29:
+//             return 'W'
+//         case 30:
+//             return 'X'
+//         case 31:
+//             return 'Y'
+//     }
+// }
