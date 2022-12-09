@@ -149,13 +149,21 @@ export default {
     },
     getPrinters() {
       ipcRenderer.send('getPrinterList')
+      const printBrand = ['makeid', 'wewin', '博思得', 'postek', '佳博', 'gainscha', '致明兴', 'zmin', '澳兮', 'aoxi']
+      const printList = []
       ipcRenderer.on('getPrinterList', (event, list) => {
         list.forEach((item) => {
+          const printName = item.name.toLowerCase()
+          printBrand.forEach(print => {
+            if (printName.indexOf(print) !== -1) {
+              printList.push(item)
+            }
+          })
           if (item.isDefault) {
             this.selectedPrinterName = item.name;
           }
         });
-        this.printerList = list
+        this.printerList = printList
       })
     },
     handlePrint() {

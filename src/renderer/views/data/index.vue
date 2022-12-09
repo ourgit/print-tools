@@ -630,7 +630,8 @@ export default {
           tempDataList.forEach((item, index) => {
             seq = lastSeq + (index + 1)
             const itemSeq = this.$generateSerialNumber(seq, 9)
-            item.A003 = generateSingleCode(this.codeForm.issueId, this.codeForm.orgId, itemSeq)
+            item.A003 = generateSingleCode(this.codeForm.issueId, this.codeForm.orgId)
+            console.log(generateSingleCode)
           })
           if (historyIndex === -1) {
             todayHistory.push({

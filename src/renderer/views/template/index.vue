@@ -13,7 +13,7 @@
           <div class="size">{{item.pageSize}}</div>
           <div class="btn">
             <router-link :to="{path:'/editTemplate',query: { type: 1,id: item.id }}">
-              <el-button type="primary" class="edit-btn" size="small">编辑</el-button>
+              <el-button type="primary" class="edit-btn" size="small">查看</el-button>
             </router-link>
           </div>
         </div>
@@ -30,7 +30,7 @@
           <div class="size">{{item.pageSize}}</div>
           <div class="btn">
             <router-link :to="{path:'/editTemplate',query: { type: 2,id: item.id,localId: item.localId }}">
-              <el-button type="primary" size="small">编辑</el-button>
+              <el-button type="primary" size="small">新增</el-button>
             </router-link>
             <el-button type="danger" size="small" @click="delTemplate(index)">删除</el-button>
           </div>
